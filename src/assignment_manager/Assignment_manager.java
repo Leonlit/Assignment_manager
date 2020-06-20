@@ -19,16 +19,14 @@ import javafx.stage.Stage;
  */
 public class Assignment_manager extends Application {
     
-    
-    
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
         
         Scene scene = new Scene(root);
-        
         stage.setScene(scene);
         stage.show();
+        stage.setTitle("Assignment Manager - v0.5.1");
     }
 
     /**
