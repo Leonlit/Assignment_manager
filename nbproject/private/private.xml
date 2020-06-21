@@ -3,11 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/software_devs/Java/Assignment_manager/src/assignment_manager/Main.fxml</file>
-            <file>file:/D:/software_devs/Java/Assignment_manager/src/assignment_manager/addnew.css</file>
             <file>file:/D:/software_devs/Java/Assignment_manager/src/assignment_manager/MainController.java</file>
+            <file>file:/D:/software_devs/Java/Assignment_manager/src/assignment_manager/ParseData.java</file>
             <file>file:/D:/software_devs/Java/Assignment_manager/src/assignment_manager/Assignment_manager.java</file>
-            <file>file:/D:/software_devs/Java/Assignment_manager/src/assignment_manager/addNew.fxml</file>
             <file>file:/D:/software_devs/Java/Assignment_manager/src/assignment_manager/AddNewController.java</file>
         </group>
     </open-files>

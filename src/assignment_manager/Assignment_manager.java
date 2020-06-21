@@ -6,19 +6,12 @@
 package assignment_manager;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-/**
- *
- * @author User
- */
 public class Assignment_manager extends Application {
-    
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
@@ -28,10 +21,7 @@ public class Assignment_manager extends Application {
         stage.show();
         stage.setTitle("Assignment Manager - v0.5.1");
     }
-
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String[] args) {
         launch(args);
     }
