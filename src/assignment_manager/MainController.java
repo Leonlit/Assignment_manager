@@ -7,7 +7,6 @@ package assignment_manager;
 
 import javafx.scene.Cursor;
 import javafx.scene.text.Font;
-import java.time.YearMonth;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 
@@ -25,16 +24,21 @@ import java.net.URL;
 import java.util.ArrayList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class MainController implements Initializable {
     
     private int currMonthNumber = 0;
     private int currYear = Calendar.getInstance().get(Calendar.YEAR);
-    public static Stage addNew;
-    private ArrayList<String> assignments = new ArrayList<String>(); 
+    private static Stage addNew;
+    private DBManagement DB;
+    private ArrayList<ParsedData> assignments = new ArrayList<ParsedData>();
+    private ArrayList<Integer> currItemListID = new ArrayList<Integer>();
     
     @FXML
     private GridPane calendar;
@@ -57,22 +61,27 @@ public class MainController implements Initializable {
     }
     
     @FXML
-    public void nextMonth() {
+    private void viewAll () {
+        
+    }
+    
+    @FXML
+    private void nextMonth() {
         if (currMonthNumber < 12) {
             calendar.getChildren().clear();
             currMonthNumber++;
             showMonth(currMonthNumber, currMonth);
-            drawCalendar(ParseData.getDaysForMonth(currYear ,currMonthNumber));
+            drawCalendar(ParsedData.getDaysForMonth(currYear ,currMonthNumber));
         }
     }
     
     @FXML
-    public void prevMonth() {
+    private void prevMonth() {
         if (currMonthNumber > 1) {
             calendar.getChildren().clear();
             currMonthNumber--;
             showMonth(currMonthNumber, currMonth);
-            drawCalendar(ParseData.getDaysForMonth(currYear ,currMonthNumber));
+            drawCalendar(ParsedData.getDaysForMonth(currYear ,currMonthNumber));
         }
     }
     
@@ -80,12 +89,20 @@ public class MainController implements Initializable {
         System.out.println(day);
     }
     
-    @FXML
-    public void viewAll () {
-        
+    private void showMonth (int month, Label obj) {
+        String months[] = {"January", "February", "March",
+                            "April", "May", "June", "July",
+                            "August", "September", "October",
+                            "November", "December"
+                            };
+        obj.setText(months[month - 1]);
     }
     
-    public void drawCalendar (int daysInMonth) {
+    private void deleteData (String index) {
+        System.out.println(index);
+    }
+    
+    private void drawCalendar (int daysInMonth) {
         for (int x = 0; x < daysInMonth; x++) {
 
             Label temp = new Label("" + (x + 1));
@@ -105,56 +122,72 @@ public class MainController implements Initializable {
         }
     }
     
-    public void setupCalendar () {
-        currMonthNumber = ParseData.getCurrMonth();
+    private void setupCalendar () {
+        currMonthNumber = ParsedData.getCurrMonth();
         showMonth(currMonthNumber, currMonth);
-        drawCalendar(ParseData.getDaysForMonth(currYear, currMonthNumber));
-    }
-    
-    public void showMonth (int month, Label obj) {
-        String months[] = {"January", "February", "March",
-                            "April", "May", "June", "July",
-                            "August", "September", "October",
-                            "November", "December"
-                            };
-        obj.setText(months[month - 1]);
+        drawCalendar(ParsedData.getDaysForMonth(currYear, currMonthNumber));
     }
     
     String sample[] = {"22052020Test gsfsff fdsfs fdfsd fsfsdfdfdsfd sfdsdfTitle", "22062020Test gsfsff fdsfs fdfsd fsfsdfdfdsfd sfdsdfTitle", "22072020Test Title", "22082020Test Title"};
     
-    public void setupItemList() {
+    private void setupItemList(ArrayList<ParsedData> data) {
         VBox widget = new VBox();
         String status = "";
-        String extra = "green;";
+        String extra = "";
+        ParsedData currData;
         
-        for (int x = 0;x<sample.length;x++) {
-            ParseData parsedData = new ParseData(sample[x]);
+        for (int x = 0;x<data.size();x++) {
+            extra = "green;";
+            currData = data.get(x);
             VBox container = new VBox();
-            Label title = new Label (parsedData.getTitle());
+            Label title = new Label (currData.getTitle());
             title.setStyle("-fx-font:22px Georgia;"
                             + "-fx-font-weight:800;");
             title.setWrapText(true);
             title.setMinWidth(180.0);
-            Label dueDate = new Label(parsedData.getDay() + "/" + parsedData.getMonth() + "/" + parsedData.getYear());
+            Label dueDate = new Label(currData.getDay() + "/" + currData.getMonth() + "/" + currData.getYear());
             dueDate.setStyle("-fx-font:15px System;"
                             + "-fx-font-weight:900;");
             
-            int daysLeftMore = parsedData.daysLeft();
-            if (!parsedData.taskDued()) {    
+            int daysLeftMore = currData.daysLeft();
+            if (!currData.taskDued()) {    
                 status = "left";
-                if (daysLeftMore <= 3) {
+                if (daysLeftMore == 0) {
+                    status = "left - today!";
+                    extra = "red;";
+                }else if (daysLeftMore <= 3) {
                    extra = "darkorange;";
                 }
             }else {
                 status = "dued";
                 extra = "red;";
             }
+            
             Label daysLeft = new Label(daysLeftMore + " days " + status);
             daysLeft.setStyle("-fx-font:15px System;"
                             + "-fx-font-weight:900;"
                             + "-fx-text-fill:" + extra);
             
-            container.getChildren().addAll(title, dueDate, daysLeft);
+            BorderPane subSection = new BorderPane();
+            HBox subBtn = new HBox();
+            Button editBtn = new Button("Edit");
+            Button deleteBtn = new Button("Delete");
+            deleteBtn.setId("" + currData.getID());
+            subSection.setLeft(daysLeft);
+            
+            deleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    deleteData(((Button)(e.getSource())).getId());
+                }
+            });
+            
+            subBtn.setSpacing(10);
+            
+            subBtn.getChildren().addAll(editBtn, deleteBtn);
+            subSection.setRight(subBtn);
+            
+            container.getChildren().addAll(title, dueDate, subSection);
             container.setMaxHeight(100.0);
             container.setPadding(new Insets(10, 10, 20, 20));
             container.setStyle("-fx-border-color:black;"
@@ -166,8 +199,10 @@ public class MainController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        DB = new DBManagement();
+        assignments = DB.getAllData();
         setupCalendar();
-        setupItemList();
+        setupItemList(assignments);
     }    
     
 }

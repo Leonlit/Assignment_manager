@@ -3,26 +3,32 @@ package assignment_manager;
 import java.time.YearMonth;
 import java.util.Calendar;
 
-public class ParseData {
-    private String dueDate;
+public class ParsedData {
+    private String dueDate[];
     private String title;
+    private int ID;
     private boolean isDued;
     
-    public ParseData (String data) {
-        dueDate = data.substring(0, 8);
-        title = data.substring(8,data.length());
+    public ParsedData (int ID, String title, String dueDate) {
+        this.dueDate = dueDate.split("-");
+        this.title = title;
+        this.ID = ID;
+    }
+    
+    public int getID () {
+        return ID;
     }
     
     public int getDay () {
-        return Integer.parseInt(dueDate.substring(0,2));
+        return Integer.parseInt(dueDate[2]);
     }
     
     public int getMonth () {
-        return Integer.parseInt(dueDate.substring(2,4));
+        return Integer.parseInt(dueDate[1]);
     }
     
     public int getYear () {
-        return Integer.parseInt(dueDate.substring(4,8));
+        return Integer.parseInt(dueDate[0]);
     }
     
     public String getTitle () {

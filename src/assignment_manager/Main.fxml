@@ -56,29 +56,29 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </GridPane>
-      <Pane fx:id="notisBoard" layoutY="369.0" prefHeight="233.0" prefWidth="394.0" style="-fx-background-color: #7b7b7b;" AnchorPane.bottomAnchor="0.0">
+      <Pane fx:id="notisBoard" layoutY="369.0" prefHeight="233.0" prefWidth="394.0" AnchorPane.bottomAnchor="0.0">
          <children>
-            <Label layoutX="18.0" layoutY="14.0" text="Number of Available Assignment : " textFill="WHITE">
+            <Label layoutX="18.0" layoutY="14.0" text="Number of Available Assignment : ">
                <font>
                   <Font name="Arial Black" size="19.0" />
                </font>
             </Label>
-            <Label fx:id="assignmentNumnber" layoutX="169.0" layoutY="49.0" text="#10" textFill="#edff61">
+            <Label fx:id="assignmentNumnber" layoutX="169.0" layoutY="49.0" text="#10" textFill="#ffcd00">
                <font>
                   <Font name="Arial Black" size="28.0" />
                </font>
             </Label>
-            <Label layoutX="101.0" layoutY="94.0" text="Assignment Alert :" textFill="WHITE">
+            <Label layoutX="101.0" layoutY="94.0" text="Assignment Alert :">
                <font>
                   <Font name="Arial Black" size="19.0" />
                </font>
             </Label>
-            <Label fx:id="NoticeTitle" layoutX="42.0" layoutY="138.0" text="Assignment Title" textFill="RED">
+            <Label fx:id="NoticeTitle" layoutX="19.0" layoutY="127.0" prefHeight="67.0" prefWidth="358.0" text="Assignment Title until it goes out of the box, but realized it wrapped itself" textFill="RED" wrapText="true">
                <font>
-                  <Font name="Arial" size="19.0" />
+                  <Font name="Arial Bold" size="19.0" />
                </font>
             </Label>
-            <Label fx:id="NoticeDueDate" layoutX="303.0" layoutY="192.0" prefHeight="22.0" prefWidth="73.0" text="Due date" textFill="RED">
+            <Label fx:id="NoticeDueDate" layoutX="303.0" layoutY="197.0" prefHeight="22.0" prefWidth="73.0" text="Due date" textFill="RED">
                <font>
                   <Font name="Arial Black" size="14.0" />
                </font>
