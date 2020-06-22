@@ -13,7 +13,7 @@
         <URL value="@addnew.css" />
     </stylesheets>
    <children>
-      <TextField fx:id="createNewTitle" layoutX="143.0" layoutY="49.0" prefHeight="25.0" prefWidth="389.0" AnchorPane.leftAnchor="143.0" AnchorPane.rightAnchor="68.0" />
+      <TextField fx:id="createNewTitle" layoutX="143.0" layoutY="49.0" prefHeight="25.0" prefWidth="389.0" promptText="title" AnchorPane.leftAnchor="143.0" AnchorPane.rightAnchor="68.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" graphicTextGap="6.0" layoutX="83.0" layoutY="48.0" text="Title " textAlignment="CENTER">
          <font>
             <Font name="Bodoni MT Bold" size="22.0" />
@@ -24,7 +24,7 @@
             <Font name="Bodoni MT Bold" size="22.0" />
          </font>
       </Label>
-      <DatePicker fx:id="createNewDueDate" layoutX="143.0" layoutY="264.0" AnchorPane.topAnchor="104.0" />
-      <Button fx:id="createNewBtn" layoutX="493.0" layoutY="347.0" mnemonicParsing="false" text="Create New" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="29.0" />
+      <DatePicker fx:id="createNewDueDate" layoutX="143.0" layoutY="264.0" promptText="dd/mm/yyyy" AnchorPane.topAnchor="104.0" />
+      <Button fx:id="createNewBtn" layoutX="493.0" layoutY="347.0" mnemonicParsing="false" onAction="#getData" text="Create New" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="29.0" />
    </children>
 </AnchorPane>

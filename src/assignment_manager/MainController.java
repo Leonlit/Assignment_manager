@@ -5,6 +5,7 @@
  */
 package assignment_manager;
 
+import java.awt.BorderLayout;
 import javafx.scene.Cursor;
 import javafx.scene.text.Font;
 import java.util.Calendar;
@@ -28,36 +29,51 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.WindowEvent;
 
 public class MainController implements Initializable {
     
     private int currMonthNumber = 0;
-    private int currYear = Calendar.getInstance().get(Calendar.YEAR);
-    private static Stage addNew;
-    private DBManagement DB;
-    private ArrayList<ParsedData> assignments = new ArrayList<ParsedData>();
-    private ArrayList<Integer> currItemListID = new ArrayList<Integer>();
+    public static int currYear = Calendar.getInstance().get(Calendar.YEAR);
+    public static Stage addNew;
+    public static boolean stageOpen = false;
+    public static DBManagement DB;
+    public Stage confirmation;
+    //public static ArrayList<ParsedData> assignments = new ArrayList<ParsedData>();
+    //public ArrayList<Integer> currItemListID = new ArrayList<Integer>();
     
     @FXML
-    private GridPane calendar;
+    public GridPane calendar;
     
     @FXML
-    private Label currMonth;
+    public Label currMonth;
     
     @FXML
-    private ScrollPane itemListPane;
+    public ScrollPane itemListPane;
     
     @FXML
     private void addNewAssignment(ActionEvent event) throws Exception  {
-        addNew = new Stage();
-        Parent design = FXMLLoader.load(getClass().getResource("addNew.fxml"));
-        
-        Scene addAssignment = new Scene(design);
-        addNew.setScene(addAssignment);
-        addNew.setTitle("Add New Assignment Into List");
-        addNew.show();
+        if (!stageOpen) {
+            addNew = new Stage();
+            Parent design = FXMLLoader.load(getClass().getResource("addNew.fxml"));
+            
+            Scene addAssignment = new Scene(design);
+            addNew.setScene(addAssignment);
+            addNew.setTitle("Add New Assignment Into List");
+            addNew.show();
+            addNew.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent we) {
+                    refreshMainPage();
+                    MainController.stageOpen = false;
+                }
+            });
+            stageOpen = true;
+        }
     }
     
     @FXML
@@ -91,8 +107,8 @@ public class MainController implements Initializable {
     
     private ArrayList<ParsedData> getTaskForMonth(int month) {
         ArrayList<ParsedData> items = new ArrayList<ParsedData>();
-        for (int x = 0; x< assignments.size();x++) {
-            if (assignments.get(x).getMonth() == month) items.add(assignments.get(x));
+        for (int x = 0; x< DB.data.size();x++) {
+            if (DB.data.get(x).getMonth() == month) items.add(DB.data.get(x));
         }
         return items;
     }
@@ -106,8 +122,36 @@ public class MainController implements Initializable {
         obj.setText(months[month - 1]);
     }
     
-    private void deleteData (String index) {
-        System.out.println(index);
+    public static Button confirm ;
+    public static Label text;
+    private void deleteData (String ID, String title) {
+        confirmation = new Stage();
+        
+        BorderLayout layout= new BorderLayout();
+        VBox childs = new VBox();
+        
+        text = new Label("Confirm to delete " + title + "?");
+        confirm = new Button("Confirm");
+        confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+               int stats = DB.deleteData(Integer.parseInt(ID));
+               if (stats > 0 ) {
+                   confirm.setDisable(true);
+                   text.setText("Succefully Deleted the record!!!");
+               }
+            }
+        });
+        childs.getChildren().addAll(text, confirm);
+        childs.setPadding(new Insets(10, 10, 20, 20));
+        
+        layout.addLayoutComponent(childs, BorderLayout.CENTER);
+        
+        Scene newScene = new Scene(layout, 250, 100);
+        
+        confirmation.setScene(newScene);
+        confirmation.setTitle("Deletion Confirmation");
+        confirmation.show();
     }
     
     private void drawCalendar (int daysInMonth, ArrayList<ParsedData> taskOnDay) {
@@ -131,21 +175,21 @@ public class MainController implements Initializable {
             
             if (taskDays.contains(x+1)) {
                 ParsedData currItem = taskOnDay.get(taskDays.indexOf(x+1));
-                    if (currItem.daysLeft() < 3) {
-                        taskColor = "#FFA500";
+                if (currItem.daysLeft() < 3) {
+                    taskColor = "#FFA500";
+                }
+                if (currItem.daysLeft() <= 0) {
+                    taskColor = "#DC143C";
+                }
+                temp.setStyle("-fx-background-color:" + taskColor + ";"
+                            + "-fx-padding:10.0;"
+                            + "-fx-border-width:1.0;"
+                            + "-fx-border-color:black;");
+                temp.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        showAssignmentOfDay(((Label)e.getSource()).getText());
                     }
-                    if (currItem.daysLeft() <= 0) {
-                        taskColor = "#DC143C";
-                    }
-                    temp.setStyle("-fx-background-color:" + taskColor + ";"
-                                + "-fx-padding:10.0;"
-                                + "-fx-border-width:1.0;"
-                                + "-fx-border-color:black;");
-                    temp.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent e) {
-                            showAssignmentOfDay(((Label)e.getSource()).getText());
-                        }
                 });
                 
             }
@@ -163,11 +207,10 @@ public class MainController implements Initializable {
         VBox widget = new VBox();
         String status = "";
         String extra = "";
-        ParsedData currData;
         
         for (int x = 0;x<data.size();x++) {
             extra = "green;";
-            currData = data.get(x);
+            final ParsedData currData = data.get(x);
             VBox container = new VBox();
             Label title = new Label (currData.getTitle());
             title.setStyle("-fx-font:22px Georgia;"
@@ -207,7 +250,7 @@ public class MainController implements Initializable {
             deleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    deleteData(((Button)(e.getSource())).getId());
+                    deleteData(((Button)(e.getSource())).getId(), currData.getTitle());
                 }
             });
             
@@ -229,9 +272,14 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         DB = new DBManagement();
-        assignments = DB.getAllData();
+        refreshMainPage();
+    }
+    
+    private void refreshMainPage () {
+        calendar.getChildren().clear();
+        itemListPane.setContent(null);
         setupCalendar();
-        setupItemList(assignments);
-    }    
+        setupItemList(DB.data);
+    }
     
 }

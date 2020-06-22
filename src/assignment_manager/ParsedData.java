@@ -7,12 +7,14 @@ public class ParsedData {
     private String dueDate[];
     private String title;
     private int ID;
+    private int index;
     private boolean isDued;
     
-    public ParsedData (int ID, String title, String dueDate) {
+    public ParsedData (int ID, int index, String title, String dueDate) {
         this.dueDate = dueDate.split("-");
         this.title = title;
         this.ID = ID;
+        this.index = index;
     }
     
     public int getID () {
