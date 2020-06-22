@@ -71,7 +71,7 @@ public class MainController implements Initializable {
             calendar.getChildren().clear();
             currMonthNumber++;
             showMonth(currMonthNumber, currMonth);
-            drawCalendar(ParsedData.getDaysForMonth(currYear ,currMonthNumber));
+            drawCalendar(ParsedData.getDaysForMonth(currYear ,currMonthNumber), getTaskForMonth(currMonthNumber));
         }
     }
     
@@ -81,12 +81,20 @@ public class MainController implements Initializable {
             calendar.getChildren().clear();
             currMonthNumber--;
             showMonth(currMonthNumber, currMonth);
-            drawCalendar(ParsedData.getDaysForMonth(currYear ,currMonthNumber));
+            drawCalendar(ParsedData.getDaysForMonth(currYear ,currMonthNumber), getTaskForMonth(currMonthNumber));
         }
     }
     
     private void showAssignmentOfDay (String day) {
         System.out.println(day);
+    }
+    
+    private ArrayList<ParsedData> getTaskForMonth(int month) {
+        ArrayList<ParsedData> items = new ArrayList<ParsedData>();
+        for (int x = 0; x< assignments.size();x++) {
+            if (assignments.get(x).getMonth() == month) items.add(assignments.get(x));
+        }
+        return items;
     }
     
     private void showMonth (int month, Label obj) {
@@ -102,22 +110,45 @@ public class MainController implements Initializable {
         System.out.println(index);
     }
     
-    private void drawCalendar (int daysInMonth) {
+    private void drawCalendar (int daysInMonth, ArrayList<ParsedData> taskOnDay) {
+        ArrayList <Integer> taskDays = new ArrayList<Integer>();
+        for (int x = 0 ;x< taskOnDay.size();x++) {
+            taskDays.add(taskOnDay.get(x).getDay());
+        }
+        
         for (int x = 0; x < daysInMonth; x++) {
 
             Label temp = new Label("" + (x + 1));
             temp.setFont(new Font("Cambria", 20));
             temp.setCursor(Cursor.HAND);
-            temp.setStyle("-fx-background-color: lightgreen;-fx-padding:10.0;-fx-border-width:1.0;-fx-border-color:black;");
+            temp.setStyle("-fx-background-color: lightgrey;"
+                            + "-fx-padding:10.0;"
+                            + "-fx-border-width:1.0;"
+                            + "-fx-border-color:black;");
             temp.setPrefHeight(45.0);
             temp.setPrefWidth(50.0);
+            String taskColor = "lightGreen";
             
-            temp.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-                    showAssignmentOfDay(((Label)e.getSource()).getText());
-                }
-            });
+            if (taskDays.contains(x+1)) {
+                ParsedData currItem = taskOnDay.get(taskDays.indexOf(x+1));
+                    if (currItem.daysLeft() < 3) {
+                        taskColor = "#FFA500";
+                    }
+                    if (currItem.daysLeft() <= 0) {
+                        taskColor = "#DC143C";
+                    }
+                    temp.setStyle("-fx-background-color:" + taskColor + ";"
+                                + "-fx-padding:10.0;"
+                                + "-fx-border-width:1.0;"
+                                + "-fx-border-color:black;");
+                    temp.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent e) {
+                            showAssignmentOfDay(((Label)e.getSource()).getText());
+                        }
+                });
+                
+            }
             calendar.add(temp, x%7, x/7);
         }
     }
@@ -125,11 +156,9 @@ public class MainController implements Initializable {
     private void setupCalendar () {
         currMonthNumber = ParsedData.getCurrMonth();
         showMonth(currMonthNumber, currMonth);
-        drawCalendar(ParsedData.getDaysForMonth(currYear, currMonthNumber));
+        drawCalendar(ParsedData.getDaysForMonth(currYear, currMonthNumber), getTaskForMonth(currMonthNumber));
     }
-    
-    String sample[] = {"22052020Test gsfsff fdsfs fdfsd fsfsdfdfdsfd sfdsdfTitle", "22062020Test gsfsff fdsfs fdfsd fsfsdfdfdsfd sfdsdfTitle", "22072020Test Title", "22082020Test Title"};
-    
+        
     private void setupItemList(ArrayList<ParsedData> data) {
         VBox widget = new VBox();
         String status = "";
