@@ -5,7 +5,6 @@
  */
 package assignment_manager;
 
-import javafx.scene.layout.BorderPane;
 import javafx.scene.Cursor;
 import javafx.scene.text.Font;
 import java.util.Calendar;
@@ -44,17 +43,17 @@ public class MainController implements Initializable {
     public static boolean stageOpen = false;
     public static DBManagement DB;
     public Stage confirmation;
-    //public static ArrayList<ParsedData> assignments = new ArrayList<ParsedData>();
-    //public ArrayList<Integer> currItemListID = new ArrayList<Integer>();
+    private boolean showingAll = false;
     
     @FXML
-    public GridPane calendar;
+    private GridPane calendar;
     
     @FXML
-    public Label currMonth;
+    private Label currMonth, assignmentNumnber, noticeTitle, noticeDueDate, noticeDayLeft;
     
     @FXML
-    public ScrollPane itemListPane;
+    private ScrollPane itemListPane;
+    
     
     @FXML
     private void addNewAssignment(ActionEvent event) throws Exception  {
@@ -79,7 +78,14 @@ public class MainController implements Initializable {
     
     @FXML
     private void viewAll () {
-        
+        showingAll = true;
+        refreshMainPage(DB.data, currMonthNumber);
+    }
+    
+    @FXML
+    private void showCurrMonth() {
+        showingAll = false;
+        refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
     }
     
     @FXML
@@ -100,8 +106,17 @@ public class MainController implements Initializable {
         }
     }
     
-    private void showAssignmentOfDay (String day) {
-        System.out.println(day);
+    private void showAssignmentOfDay (int day) {
+        showingAll = false;
+        ArrayList<ParsedData> thisMonthTask = getTaskForMonth(currMonthNumber);
+        ArrayList<ParsedData> certainDayTask = new ArrayList<ParsedData>();
+        for (int x = 0;x<thisMonthTask.size();x++) {
+            ParsedData currItem = thisMonthTask.get(x);
+            if (currItem.getDay() == day) {
+                certainDayTask.add(currItem);
+            }
+        }
+        refreshMainPage(certainDayTask, currMonthNumber);
     }
     
     private ArrayList<ParsedData> getTaskForMonth(int month) {
@@ -119,41 +134,6 @@ public class MainController implements Initializable {
                             "November", "December"
                             };
         obj.setText(months[month - 1]);
-    }
-    
-    public static Button confirm ;
-    public static Label text;
-    private void deleteData (String ID, String title, int index) {
-        confirmation = new Stage();
-        
-        BorderPane layout= new BorderPane();
-        VBox childs = new VBox();
-        
-        text = new Label("Confirm to delete \"" + title + "\"?");
-        confirm = new Button("Confirm");
-        confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-               int stats = DB.deleteData(Integer.parseInt(ID));
-               if (stats > 0 ) {
-                   confirm.setDisable(true);
-                   text.setText("Succefully Deleted the record!!!");
-                   DB.data.remove(index);
-                   refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
-               }
-            }
-        });
-        childs.getChildren().addAll(text, confirm);
-        text.setPadding(new Insets(10, 10, 20, 20));
-        childs.setAlignment(Pos.CENTER);
-        
-        layout.setCenter(childs);
-        
-        Scene newScene = new Scene(layout, 250, 100);
-        
-        confirmation.setScene(newScene);
-        confirmation.setTitle("Deletion Confirmation");
-        confirmation.show();
     }
     
     private void drawCalendar (int daysInMonth, ArrayList<ParsedData> taskOnDay) {
@@ -180,7 +160,7 @@ public class MainController implements Initializable {
                 if (currItem.daysLeft() < 3) {
                     taskColor = "#FFA500";
                 }
-                if (currItem.daysLeft() <= 0) {
+                if (currItem.taskDued() || currItem.daysLeft() == 0) {
                     taskColor = "#DC143C";
                 }
                 temp.setStyle("-fx-background-color:" + taskColor + ";"
@@ -190,7 +170,7 @@ public class MainController implements Initializable {
                 temp.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
-                        showAssignmentOfDay(((Label)e.getSource()).getText());
+                        showAssignmentOfDay(Integer.parseInt(((Label)e.getSource()).getText()));
                     }
                 });
                 
@@ -237,7 +217,7 @@ public class MainController implements Initializable {
                 extra = "red;";
             }
             
-            Label daysLeft = new Label(daysLeftMore + " days " + status);
+            Label daysLeft = new Label(Math.abs(daysLeftMore) + " days " + status);
             daysLeft.setStyle("-fx-font:15px System;"
                             + "-fx-font-weight:900;"
                             + "-fx-text-fill:" + extra);
@@ -271,18 +251,75 @@ public class MainController implements Initializable {
         itemListPane.setContent(widget);
     }
     
+    public static Button confirm ;
+    public static Label text;
+    private void deleteData (String ID, String title, int index) {
+        confirmation = new Stage();
+        
+        BorderPane layout= new BorderPane();
+        VBox childs = new VBox();
+        
+        text = new Label("Confirm to delete \"" + title + "\"?");
+        confirm = new Button("Confirm");
+        confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+               int stats = DB.deleteData(Integer.parseInt(ID));
+               if (stats > 0 ) {
+                   confirm.setDisable(true);
+                   text.setText("Succefully Deleted the record!!!");
+                   DB.data.remove(index);
+                   DB.updateDataIndex();
+                   refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+               }
+            }
+        });
+        childs.getChildren().addAll(text, confirm);
+        text.setPadding(new Insets(10, 10, 20, 20));
+        childs.setAlignment(Pos.CENTER);
+        
+        layout.setCenter(childs);
+        
+        Scene newScene = new Scene(layout, 250, 100);
+        
+        confirmation.setScene(newScene);
+        confirmation.setTitle("Deletion Confirmation");
+        confirmation.show();
+    }
+    
+    private void assignmentAlert (ParsedData data) {
+        noticeTitle.setText(data.getTitle());
+        noticeDueDate.setText("" + data.getDay() + "/" + data.getMonth() + "/" + data.getYear());
+        String extra = "black", text = "";
+        if (data.taskDued()) {
+            extra = "red";
+            text = "Dued " + Math.abs(data.daysLeft()) + " days ago";
+        }else {
+            extra = "green";
+            text = "Due in " + data.daysLeft();
+        }
+        noticeDayLeft.setStyle("-fx-text-fill:" + extra);
+        noticeDayLeft.setText(text);
+        
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         DB = new DBManagement();
         currMonthNumber = ParsedData.getCurrMonth();
-        refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+        assignmentAlert(DB.data.get(0));
         
+        refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
     }
     
     private void refreshMainPage (ArrayList<ParsedData> data, int month) {
         calendar.getChildren().clear();
         itemListPane.setContent(null);
         setupCalendar(month);
+        assignmentNumnber.setText("#" + DB.data.size());
+        if (showingAll) {
+            data = DB.data;
+        }
         setupItemList(data);
     }
     

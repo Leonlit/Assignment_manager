@@ -25,8 +25,16 @@ public class ParsedData {
         return Integer.parseInt(dueDate[2]);
     }
     
+    public void updateIndex(int newIndex) {
+        index = newIndex;
+    }
+    
     public int getIndex() {
         return index;
+    }
+    
+    public String getDueDate () {
+        return String.join("-", dueDate);
     }
     
     public int getMonth () {
@@ -65,6 +73,7 @@ public class ParsedData {
             days = currDay;
             days += getDaysForTheseMonth(currMonth, monthGap) - theDay;
             isDued = true;
+            days = days * -1;
         }
         return days;
     }

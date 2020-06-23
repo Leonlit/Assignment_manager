@@ -83,6 +83,7 @@ public class DBManagement {
                 int newID = generatedKeys.getInt(1);
                 System.out.println("newID : " + newID);
                 data.add(new ParsedData(newID, data.size(), title, dueDate));
+                updateDataIndex();
             }
             else {
                 throw new SQLException("Creating user failed, no ID obtained.");
@@ -108,5 +109,11 @@ public class DBManagement {
              System.out.println("failed to delete record");
         }
         return num;
+    }
+    
+    public void updateDataIndex () {
+        for (int x = 0; x< data.size();x++) {
+            data.get(x).updateIndex(x);
+        }
     }
 }

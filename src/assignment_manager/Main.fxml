@@ -68,12 +68,17 @@
                   <Font name="Arial Black" size="19.0" />
                </font>
             </Label>
-            <Label fx:id="NoticeTitle" layoutX="49.0" layoutY="130.0" prefHeight="67.0" prefWidth="358.0" text="Assignment Title until it goes out of the box, but realized it wrapped itself" textFill="RED" wrapText="true">
+            <Label fx:id="noticeTitle" layoutX="49.0" layoutY="130.0" prefHeight="67.0" prefWidth="358.0" text="Assignment Title until it goes out of the box, but realized it wrapped itself" textFill="RED" wrapText="true">
                <font>
                   <Font name="Arial Bold" size="19.0" />
                </font>
             </Label>
-            <Label fx:id="NoticeDueDate" layoutX="368.0" layoutY="197.0" prefHeight="22.0" prefWidth="73.0" text="Due date" textFill="RED">
+            <Label fx:id="noticeDueDate" alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="197.0" prefHeight="22.0" prefWidth="116.0" text="Due date" textFill="RED">
+               <font>
+                  <Font name="Arial Black" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="noticeDayLeft" alignment="CENTER" contentDisplay="CENTER" layoutX="314.0" layoutY="197.0" prefHeight="22.0" prefWidth="116.0" text="days Left" textFill="RED">
                <font>
                   <Font name="Arial Black" size="14.0" />
                </font>
@@ -92,12 +97,12 @@
             <Font name="Arial Black" size="18.0" />
          </font>
       </Label>
-      <Button fx:id="viewAll" layoutX="205.0" layoutY="25.0" mnemonicParsing="false" onAction="#addNewAssignment" text="View All" textAlignment="CENTER" AnchorPane.topAnchor="25.0">
+      <Button fx:id="viewAll" layoutX="205.0" layoutY="25.0" mnemonicParsing="false" onAction="#viewAll" text="View All" textAlignment="CENTER" AnchorPane.topAnchor="25.0">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button fx:id="viewCurrMonth" layoutX="287.0" layoutY="25.0" mnemonicParsing="false" onAction="#addNewAssignment" text="View Current Month" textAlignment="CENTER" AnchorPane.topAnchor="25.0">
+      <Button fx:id="viewCurrMonth" layoutX="287.0" layoutY="25.0" mnemonicParsing="false" onAction="#showCurrMonth" text="View Current Month" textAlignment="CENTER" AnchorPane.topAnchor="25.0">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
