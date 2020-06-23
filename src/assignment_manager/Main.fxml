@@ -78,7 +78,7 @@
                   <Font name="Arial Black" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="noticeDayLeft" alignment="CENTER" contentDisplay="CENTER" layoutX="314.0" layoutY="197.0" prefHeight="22.0" prefWidth="116.0" text="days Left" textFill="RED">
+            <Label fx:id="noticeDayLeft" alignment="CENTER" contentDisplay="CENTER" layoutX="265.0" layoutY="197.0" prefHeight="22.0" prefWidth="163.0" text="days Left" textFill="RED">
                <font>
                   <Font name="Arial Black" size="14.0" />
                </font>

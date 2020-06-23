@@ -78,7 +78,7 @@ public class ParsedData {
         return days;
     }
     
-    private int getCurrDayOfMonth () {
+    public static int getCurrDayOfMonth () {
         return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
     }
     

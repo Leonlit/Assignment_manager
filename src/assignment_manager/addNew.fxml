@@ -9,9 +9,6 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="240.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment_manager.AddNewController">
-    <stylesheets>
-        <URL value="@addnew.css" />
-    </stylesheets>
    <children>
       <TextField fx:id="createNewTitle" layoutX="143.0" layoutY="49.0" prefHeight="25.0" prefWidth="389.0" promptText="title" AnchorPane.leftAnchor="143.0" AnchorPane.rightAnchor="68.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" graphicTextGap="6.0" layoutX="83.0" layoutY="48.0" text="Title " textAlignment="CENTER">
@@ -25,6 +22,6 @@
          </font>
       </Label>
       <DatePicker fx:id="createNewDueDate" layoutX="143.0" layoutY="264.0" promptText="dd/mm/yyyy" AnchorPane.topAnchor="104.0" />
-      <Button fx:id="createNewBtn" layoutX="493.0" layoutY="347.0" mnemonicParsing="false" onAction="#getData" text="Create New" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="29.0" />
+      <Button fx:id="createNewBtn" layoutX="493.0" layoutY="347.0" mnemonicParsing="false" onAction="#addData" text="Create New" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="29.0" />
    </children>
 </AnchorPane>

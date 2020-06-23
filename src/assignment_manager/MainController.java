@@ -5,6 +5,7 @@
  */
 package assignment_manager;
 
+import java.io.IOException;
 import javafx.scene.Cursor;
 import javafx.scene.text.Font;
 import java.util.Calendar;
@@ -29,21 +30,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 
 public class MainController implements Initializable {
     
     private int currMonthNumber = 0;
-    public static int currYear = Calendar.getInstance().get(Calendar.YEAR);
-    public static Stage addNew;
-    public static boolean stageOpen = false;
-    public static DBManagement DB;
-    public Stage confirmation;
+    private boolean stageOpen = false;
     private boolean showingAll = false;
+    private boolean editOpen = false;
+    
+    public static DBManagement DB;
+    public static int currYear = Calendar.getInstance().get(Calendar.YEAR);
     
     @FXML
     private GridPane calendar;
@@ -54,11 +53,10 @@ public class MainController implements Initializable {
     @FXML
     private ScrollPane itemListPane;
     
-    
     @FXML
-    private void addNewAssignment(ActionEvent event) throws Exception  {
+    private void addNewAssignment(ActionEvent event) throws IOException  {
         if (!stageOpen) {
-            addNew = new Stage();
+            Stage addNew = new Stage();
             Parent design = FXMLLoader.load(getClass().getResource("addNew.fxml"));
             
             Scene addAssignment = new Scene(design);
@@ -69,7 +67,7 @@ public class MainController implements Initializable {
                 @Override
                 public void handle(WindowEvent we) {
                     refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
-                    MainController.stageOpen = false;
+                    stageOpen = false;
                 }
             });
             stageOpen = true;
@@ -143,17 +141,23 @@ public class MainController implements Initializable {
         }
         
         for (int x = 0; x < daysInMonth; x++) {
-
+            String taskColor = "";
             Label temp = new Label("" + (x + 1));
             temp.setFont(new Font("Cambria", 20));
             temp.setCursor(Cursor.HAND);
-            temp.setStyle("-fx-background-color: lightgrey;"
+            
+            temp.setStyle("-fx-background-color:lightgrey;"
                             + "-fx-padding:10.0;"
                             + "-fx-border-width:1.0;"
                             + "-fx-border-color:black;");
             temp.setPrefHeight(45.0);
             temp.setPrefWidth(50.0);
-            String taskColor = "lightGreen";
+            
+            if (x == ParsedData.getCurrDayOfMonth() && currMonthNumber == ParsedData.getCurrMonth()) {
+                temp.setStyle(temp.getStyle() + "-fx-text-fill:blue;-fx-background-color:white;");
+            }
+            
+            taskColor = "lightgreen";
             
             if (taskDays.contains(x+1)) {
                 ParsedData currItem = taskOnDay.get(taskDays.indexOf(x+1));
@@ -229,10 +233,17 @@ public class MainController implements Initializable {
             deleteBtn.setId("" + currData.getID());
             subSection.setLeft(daysLeft);
             
+            editBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    editData(currData);
+                }
+            });
+            
             deleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    deleteData(((Button)(e.getSource())).getId(), currData.getTitle(), currData.getIndex());
+                    deleteData(currData);
                 }
             });
             
@@ -251,25 +262,22 @@ public class MainController implements Initializable {
         itemListPane.setContent(widget);
     }
     
-    public static Button confirm ;
-    public static Label text;
-    private void deleteData (String ID, String title, int index) {
-        confirmation = new Stage();
+    private void deleteData (ParsedData data) {
+        Stage confirmation = new Stage();
         
         BorderPane layout= new BorderPane();
         VBox childs = new VBox();
         
-        text = new Label("Confirm to delete \"" + title + "\"?");
-        confirm = new Button("Confirm");
+        Label text = new Label("Confirm to delete \"" + data.getTitle() + "\"?");
+        Button confirm = new Button("Confirm");
         confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-               int stats = DB.deleteData(Integer.parseInt(ID));
+               int stats = DB.deleteData(data.getID());
                if (stats > 0 ) {
                    confirm.setDisable(true);
                    text.setText("Succefully Deleted the record!!!");
-                   DB.data.remove(index);
-                   DB.updateDataIndex();
+                   DB.data.remove(data.getIndex());
                    refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
                }
             }
@@ -285,6 +293,34 @@ public class MainController implements Initializable {
         confirmation.setScene(newScene);
         confirmation.setTitle("Deletion Confirmation");
         confirmation.show();
+    }
+    
+    private void editData (ParsedData data) {
+        if (!editOpen) {
+            try {
+                Stage editData = new Stage();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("editData.fxml"));
+                Parent root = loader.load();
+
+                EditDataController controller = loader.getController();
+                //Pass whatever data you want. You can have multiple method calls here
+                controller.setupEditData(data, DB);
+
+                editData.setScene(new Scene(root));
+                editData.setTitle("Add New Assignment Into List");
+                editData.show();
+                editData.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent we) {
+                        refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+                        editOpen = false;
+                    }
+                });
+                editOpen = true;
+            }catch (IOException ex) {
+                ShowError.showError("Error when adding new record!!!\n\n",ex.getMessage());
+            }
+        }
     }
     
     private void assignmentAlert (ParsedData data) {
@@ -307,7 +343,6 @@ public class MainController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         DB = new DBManagement();
         currMonthNumber = ParsedData.getCurrMonth();
-        assignmentAlert(DB.data.get(0));
         
         refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
     }
@@ -319,6 +354,10 @@ public class MainController implements Initializable {
         assignmentNumnber.setText("#" + DB.data.size());
         if (showingAll) {
             data = DB.data;
+        }
+        
+        if (DB.data.size() != 0) {
+            assignmentAlert(DB.data.get(0));
         }
         setupItemList(data);
     }
