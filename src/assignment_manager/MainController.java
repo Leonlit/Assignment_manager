@@ -5,7 +5,7 @@
  */
 package assignment_manager;
 
-import java.awt.BorderLayout;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.Cursor;
 import javafx.scene.text.Font;
 import java.util.Calendar;
@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -68,7 +69,7 @@ public class MainController implements Initializable {
             addNew.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent we) {
-                    refreshMainPage();
+                    refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
                     MainController.stageOpen = false;
                 }
             });
@@ -86,8 +87,7 @@ public class MainController implements Initializable {
         if (currMonthNumber < 12) {
             calendar.getChildren().clear();
             currMonthNumber++;
-            showMonth(currMonthNumber, currMonth);
-            drawCalendar(ParsedData.getDaysForMonth(currYear ,currMonthNumber), getTaskForMonth(currMonthNumber));
+            refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
         }
     }
     
@@ -96,8 +96,7 @@ public class MainController implements Initializable {
         if (currMonthNumber > 1) {
             calendar.getChildren().clear();
             currMonthNumber--;
-            showMonth(currMonthNumber, currMonth);
-            drawCalendar(ParsedData.getDaysForMonth(currYear ,currMonthNumber), getTaskForMonth(currMonthNumber));
+            refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
         }
     }
     
@@ -124,13 +123,13 @@ public class MainController implements Initializable {
     
     public static Button confirm ;
     public static Label text;
-    private void deleteData (String ID, String title) {
+    private void deleteData (String ID, String title, int index) {
         confirmation = new Stage();
         
-        BorderLayout layout= new BorderLayout();
+        BorderPane layout= new BorderPane();
         VBox childs = new VBox();
         
-        text = new Label("Confirm to delete " + title + "?");
+        text = new Label("Confirm to delete \"" + title + "\"?");
         confirm = new Button("Confirm");
         confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -139,13 +138,16 @@ public class MainController implements Initializable {
                if (stats > 0 ) {
                    confirm.setDisable(true);
                    text.setText("Succefully Deleted the record!!!");
+                   DB.data.remove(index);
+                   refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
                }
             }
         });
         childs.getChildren().addAll(text, confirm);
-        childs.setPadding(new Insets(10, 10, 20, 20));
+        text.setPadding(new Insets(10, 10, 20, 20));
+        childs.setAlignment(Pos.CENTER);
         
-        layout.addLayoutComponent(childs, BorderLayout.CENTER);
+        layout.setCenter(childs);
         
         Scene newScene = new Scene(layout, 250, 100);
         
@@ -197,12 +199,12 @@ public class MainController implements Initializable {
         }
     }
     
-    private void setupCalendar () {
-        currMonthNumber = ParsedData.getCurrMonth();
-        showMonth(currMonthNumber, currMonth);
-        drawCalendar(ParsedData.getDaysForMonth(currYear, currMonthNumber), getTaskForMonth(currMonthNumber));
+    private void setupCalendar (int month) {
+        //the month, the label obj
+        showMonth(month, currMonth);
+        drawCalendar(ParsedData.getDaysForMonth(currYear, currMonthNumber), getTaskForMonth(month));
     }
-        
+    
     private void setupItemList(ArrayList<ParsedData> data) {
         VBox widget = new VBox();
         String status = "";
@@ -250,7 +252,7 @@ public class MainController implements Initializable {
             deleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    deleteData(((Button)(e.getSource())).getId(), currData.getTitle());
+                    deleteData(((Button)(e.getSource())).getId(), currData.getTitle(), currData.getIndex());
                 }
             });
             
@@ -272,14 +274,16 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         DB = new DBManagement();
-        refreshMainPage();
+        currMonthNumber = ParsedData.getCurrMonth();
+        refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+        
     }
     
-    private void refreshMainPage () {
+    private void refreshMainPage (ArrayList<ParsedData> data, int month) {
         calendar.getChildren().clear();
         itemListPane.setContent(null);
-        setupCalendar();
-        setupItemList(DB.data);
+        setupCalendar(month);
+        setupItemList(data);
     }
     
 }

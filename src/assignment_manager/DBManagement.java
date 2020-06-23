@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Comparator;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -49,6 +50,14 @@ public class DBManagement {
                 data.add(temp);
                 counter++;
             }
+            Comparator<ParsedData> ascendingComparator = new Comparator<ParsedData>() {
+                @Override
+                public int compare(ParsedData a, ParsedData b) {
+                    return a.daysLeft() - b.daysLeft();
+                }
+            };
+            data.sort(ascendingComparator);
+
         }catch (SQLException ex) {
             System.out.println("Connection error when connecting to the server.\n" + ex.getMessage());
         }    

@@ -25,6 +25,10 @@ public class ParsedData {
         return Integer.parseInt(dueDate[2]);
     }
     
+    public int getIndex() {
+        return index;
+    }
+    
     public int getMonth () {
         return Integer.parseInt(dueDate[1]);
     }
