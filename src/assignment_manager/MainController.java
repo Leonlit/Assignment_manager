@@ -153,7 +153,7 @@ public class MainController implements Initializable {
             temp.setPrefHeight(45.0);
             temp.setPrefWidth(50.0);
             
-            if (x == ParsedData.getCurrDayOfMonth() && currMonthNumber == ParsedData.getCurrMonth()) {
+            if (x == ParsedData.getCurrDayOfMonth() - 1 && currMonthNumber == ParsedData.getCurrMonth()) {
                 temp.setStyle(temp.getStyle() + "-fx-text-fill:blue;-fx-background-color:white;");
             }
             
@@ -355,11 +355,10 @@ public class MainController implements Initializable {
         if (showingAll) {
             data = DB.data;
         }
-        
         if (DB.data.size() != 0) {
             assignmentAlert(DB.data.get(0));
+            setupItemList(data);
         }
-        setupItemList(data);
     }
     
 }

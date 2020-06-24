@@ -106,6 +106,8 @@ public class EditDataController implements Initializable {
             editPageStage.setScene(newScene);
             editPageStage.setTitle("Data Edition Confirmation");
             editPageStage.show();
+        }else {
+            ShowError.showError("Error occured when editing records\n\n", errText);
         }
     }
     
