@@ -336,7 +336,12 @@ public class MainController implements Initializable {
         }
         noticeDayLeft.setStyle("-fx-text-fill:" + extra);
         noticeDayLeft.setText(text);
-        
+    }
+    
+    public void assignmentAlert () {
+        noticeTitle.setText("No Assignment available");
+        noticeDueDate.setText("");
+        noticeDayLeft.setText("");
     }
     
     @Override
@@ -355,8 +360,12 @@ public class MainController implements Initializable {
         if (showingAll) {
             data = DB.data;
         }
-        if (DB.data.size() != 0) {
+        try {
             assignmentAlert(DB.data.get(0));
+        }catch (NullPointerException | IndexOutOfBoundsException ex) {
+            //no rows in the table
+            assignmentAlert();
+        }finally {
             setupItemList(data);
         }
     }

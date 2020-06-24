@@ -64,7 +64,7 @@
                   <Font name="Arial Black" size="19.0" />
                </font>
             </Label>
-            <Label fx:id="noticeTitle" layoutX="49.0" layoutY="130.0" prefHeight="67.0" prefWidth="358.0" text="Assignment Title until it goes out of the box, but realized it wrapped itself" textFill="RED" wrapText="true">
+            <Label fx:id="noticeTitle" alignment="CENTER" contentDisplay="CENTER" layoutX="49.0" layoutY="130.0" prefHeight="67.0" prefWidth="358.0" text="Assignment Title until it goes out of the box, but realized it wrapped itself" textFill="RED" wrapText="true">
                <font>
                   <Font name="Arial Bold" size="19.0" />
                </font>
