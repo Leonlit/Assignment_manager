@@ -4,7 +4,7 @@ import java.time.YearMonth;
 import java.util.Calendar;
 
 public class ParsedData extends Data{
-    public boolean isDued;
+    private boolean isDued;
     
     public ParsedData (int ID, int index, String title, String dueDate) {
         super(ID, index, title, dueDate);

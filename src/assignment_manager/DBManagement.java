@@ -102,14 +102,13 @@ public class DBManagement {
             if (stats == 0) {
                 throw new SQLException();
             }
-            updateDataIndex();
         }catch(SQLException ex) {
             showDBErr("failed to update record\n\n" + ex);
         }
         return stats;
     }
     
-    private void updateDataIndex () {
+    public void updateDataIndex () {
         Comparator<ParsedData> ascendingComparator = new Comparator<ParsedData>() {
             @Override
             public int compare(ParsedData a, ParsedData b) {

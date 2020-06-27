@@ -74,12 +74,11 @@ public class AddNewController implements Initializable {
                 text.setStyle("-fx-font:14px Georgia;"
                             + "-fx-font-weight:800;");
                 Button confirm = new Button("Confirm");
-                
                 confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
-                        int stats = DB.addData(title, dueDate);
-                        if (stats > 0 ) {
+                        int result = DB.addData(title, dueDate);
+                        if (result > 0 ) {
                            text.setText("Succefully Added the record!!!");
                        }else {
                             text.setText("Failed to add the record to Database!!!");
@@ -91,9 +90,12 @@ public class AddNewController implements Initializable {
                 addPageNotice.setOnCloseRequest(new EventHandler<WindowEvent>() {
                     @Override
                     public void handle(WindowEvent we) {
+                        if (!confirm.isVisible()) {
+                            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                            stage.close();
+                        }
                         managingOneRecord = false;
-                        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-                        stage.close();
+                        
                     }
                 });
                 childs.getChildren().addAll(text, confirm);

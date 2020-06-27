@@ -98,6 +98,7 @@ public class EditDataController implements Initializable {
                            confirm.setVisible(false);
                            text.setText("Succefully Edited the record!!!");
                            DBObj.data.set(currItem.getIndex(), newData);
+                           DBObj.updateDataIndex();
                         }else {
                             confirm.setVisible(false);
                             text.setText("Failed to edit the record in Database!!!");
@@ -107,9 +108,11 @@ public class EditDataController implements Initializable {
                 editPageStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                     @Override
                     public void handle(WindowEvent we) {
+                        if (!confirm.isVisible()) {
+                            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                            stage.close();
+                        }
                         isManagingRecord = false;
-                        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-                        stage.close();
                     }
                 });
                 childs.getChildren().addAll(text, confirm);
