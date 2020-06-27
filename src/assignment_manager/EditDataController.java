@@ -24,6 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
@@ -34,6 +35,8 @@ public class EditDataController implements Initializable {
 
     private DBManagement DBObj;
     private ParsedData currItem;
+    private Stage stage;
+    private boolean isManagingRecord = false;
     
     @FXML
     private TextField editTitle;
@@ -41,8 +44,9 @@ public class EditDataController implements Initializable {
     @FXML
     private DatePicker editDate;
     
-    public void setupEditData (ParsedData data, DBManagement DB) {
+    public void setupEditData (ParsedData data, DBManagement DB, Stage stage) {
         DBObj = DB;
+        this.stage = stage;
         currItem = data;
         editTitle.setText(data.getTitle());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -73,39 +77,53 @@ public class EditDataController implements Initializable {
         }
         
         if(errText.length() < 1) {
-            final String dueDate = newDueDate;
-        
-            BorderPane layout= new BorderPane();
-            VBox childs = new VBox();
+            if (!isManagingRecord) {
+                isManagingRecord = true;
+                final String dueDate = newDueDate;
 
-            Label text = new Label("Confirm to edit \"" + currItem.getTitle() 
-                                    + "\",\nDued in " + currItem.getDueDate() + "\n\nInto\n\n"
-                                    + title + ",\nDued in " + dueDate + "?");
-            
-            Button confirm = new Button("Confirm");
-            confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-                    ParsedData newData = new ParsedData(currItem.getID(), currItem.getIndex(), title, dueDate);
-                    int stats = DBObj.editData(currItem.getID(), title, dueDate);
-                    if (stats > 0 ) {
-                       confirm.setDisable(true);
-                       text.setText("Succefully Edited the record!!!");
-                       DBObj.data.set(currItem.getIndex(), newData);
-                   }
-                }
-            });
-            childs.getChildren().addAll(text, confirm);
-            text.setPadding(new Insets(10, 10, 20, 20));
-            childs.setAlignment(Pos.CENTER);
+                BorderPane layout= new BorderPane();
+                VBox childs = new VBox();
 
-            layout.setCenter(childs);
+                Label text = new Label("Confirm to edit \"" + currItem.getTitle() 
+                                        + "\",\nDued in " + currItem.getDueDate() + "\n\nInto\n\n"
+                                        + title + ",\nDued in " + dueDate + "?");
 
-            Scene newScene = new Scene(layout, 400, 250);
+                Button confirm = new Button("Confirm");
+                confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        ParsedData newData = new ParsedData(currItem.getID(), currItem.getIndex(), title, dueDate);
+                        int stats = DBObj.editData(currItem.getID(), title, dueDate);
+                        if (stats > 0 ) {
+                           confirm.setVisible(false);
+                           text.setText("Succefully Edited the record!!!");
+                           DBObj.data.set(currItem.getIndex(), newData);
+                        }else {
+                            confirm.setVisible(false);
+                            text.setText("Failed to edit the record in Database!!!");
+                        }
+                    }
+                });
+                editPageStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent we) {
+                        isManagingRecord = false;
+                        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                        stage.close();
+                    }
+                });
+                childs.getChildren().addAll(text, confirm);
+                text.setPadding(new Insets(10, 10, 20, 20));
+                childs.setAlignment(Pos.CENTER);
 
-            editPageStage.setScene(newScene);
-            editPageStage.setTitle("Data Edition Confirmation");
-            editPageStage.show();
+                layout.setCenter(childs);
+
+                Scene newScene = new Scene(layout, 400, 250);
+
+                editPageStage.setScene(newScene);
+                editPageStage.setTitle("Data Edition Confirmation");
+                editPageStage.show();
+            }
         }else {
             ShowError.showError("Error occured when editing records\n\n", errText);
         }

@@ -21,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
@@ -29,6 +30,10 @@ import javafx.stage.Stage;
  */
 public class AddNewController implements Initializable {
 
+    private Stage stage;
+    private DBManagement DB;
+    private boolean managingOneRecord = false;
+    
     @FXML
     private TextField createNewTitle;
     
@@ -36,7 +41,7 @@ public class AddNewController implements Initializable {
     private DatePicker createNewDueDate;
     
     @FXML
-    private void addData () {
+    public void addData () {
         String errorText = "";
         String newDueDate = "";
         try {
@@ -56,43 +61,60 @@ public class AddNewController implements Initializable {
         }
         
         if (errorText.length() < 1) {
-            Stage addPageNotice = new Stage();
-            final String title = newTitle;
-            final String dueDate = newDueDate;
-            
-            BorderPane layout= new BorderPane();
-            VBox childs = new VBox();
+            if (!managingOneRecord) {
+                managingOneRecord = true;
+                Stage addPageNotice = new Stage();
+                final String title = newTitle;
+                final String dueDate = newDueDate;
 
-            Label text = new Label("Confirm to create " + title + ",\n that's dued in " + dueDate +"?");
-            text.setStyle("-fx-font:14px Georgia;"
-                        + "-fx-font-weight:800;");
-            Button confirm = new Button("Confirm");
-            confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-                    int stats = MainController.DB.addData(title, dueDate);
-                    if (stats > 0 ) {
-                       confirm.setDisable(true);
-                       text.setText("Succefully Added the record!!!");
-                   }else {
-                        text.setText("Failed to add the record to Database!!!");
+                BorderPane layout= new BorderPane();
+                VBox childs = new VBox();
+
+                Label text = new Label("Confirm to create " + title + ",\n that's dued in " + dueDate +"?");
+                text.setStyle("-fx-font:14px Georgia;"
+                            + "-fx-font-weight:800;");
+                Button confirm = new Button("Confirm");
+                confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        int stats = DB.addData(title, dueDate);
+                        if (stats > 0 ) {
+                           confirm.setVisible(false);
+                           text.setText("Succefully Added the record!!!");
+                       }else {
+                            confirm.setVisible(false);
+                            text.setText("Failed to add the record to Database!!!");
+                        }
                     }
-                }
-            });
-            childs.getChildren().addAll(text, confirm);
-            text.setPadding(new Insets(10, 10, 20, 20));
-            childs.setAlignment(Pos.CENTER);
+                });
+                addPageNotice.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent we) {
+                        managingOneRecord = false;
+                        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                        stage.close();
+                    }
+                });
+                childs.getChildren().addAll(text, confirm);
+                text.setPadding(new Insets(10, 10, 20, 20));
+                childs.setAlignment(Pos.CENTER);
 
-            layout.setCenter(childs);
+                layout.setCenter(childs);
 
-            Scene newScene = new Scene(layout, 400, 250);
+                Scene newScene = new Scene(layout, 400, 250);
 
-            addPageNotice.setScene(newScene);
-            addPageNotice.setTitle("Create new record Confirmation");
-            addPageNotice.show();
+                addPageNotice.setScene(newScene);
+                addPageNotice.setTitle("Create new record Confirmation");
+                addPageNotice.show();
+            }
         }else {
             ShowError.showError("Error in adding records\n\n", errorText);
         }
+    }
+    
+    public void setupAddingData (DBManagement DB, Stage stage) {
+        this.stage = stage;
+        this.DB = DB;
     }
     
     /**

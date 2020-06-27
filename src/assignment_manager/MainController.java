@@ -57,9 +57,14 @@ public class MainController implements Initializable {
     private void addNewAssignment(ActionEvent event) throws IOException  {
         if (!stageOpen) {
             Stage addNew = new Stage();
-            Parent design = FXMLLoader.load(getClass().getResource("addNew.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addNew.fxml"));
+            Parent root = loader.load();
+
+            AddNewController controller = loader.getController();
+            //Pass whatever data you want. You can have multiple method calls here
+            controller.setupAddingData(DB, addNew);
             
-            Scene addAssignment = new Scene(design);
+            Scene addAssignment = new Scene(root);
             addNew.setScene(addAssignment);
             addNew.setTitle("Add New Assignment Into List");
             addNew.show();
@@ -158,19 +163,21 @@ public class MainController implements Initializable {
             }
             
             taskColor = "lightgreen";
-            
+            String extra = "";
             if (taskDays.contains(x+1)) {
                 ParsedData currItem = taskOnDay.get(taskDays.indexOf(x+1));
-                if (currItem.daysLeft() < 3) {
-                    taskColor = "#FFA500";
+                if (currItem.daysLeft() < 4) {
+                    taskColor = "#ffad34";
                 }
                 if (currItem.taskDued() || currItem.daysLeft() == 0) {
                     taskColor = "#DC143C";
+                    extra = "-fx-text-fill:white;";
                 }
                 temp.setStyle("-fx-background-color:" + taskColor + ";"
                             + "-fx-padding:10.0;"
                             + "-fx-border-width:1.0;"
-                            + "-fx-border-color:black;");
+                            + "-fx-border-color:black;"
+                            + extra);
                 temp.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
@@ -213,7 +220,7 @@ public class MainController implements Initializable {
                 if (daysLeftMore == 0) {
                     status = "left - today!";
                     extra = "red;";
-                }else if (daysLeftMore <= 3) {
+                }else if (daysLeftMore < 4) {
                    extra = "darkorange;";
                 }
             }else {
@@ -304,10 +311,10 @@ public class MainController implements Initializable {
 
                 EditDataController controller = loader.getController();
                 //Pass whatever data you want. You can have multiple method calls here
-                controller.setupEditData(data, DB);
+                controller.setupEditData(data, DB, editData);
 
                 editData.setScene(new Scene(root));
-                editData.setTitle("Add New Assignment Into List");
+                editData.setTitle("Edit Assignment Records");
                 editData.show();
                 editData.setOnCloseRequest(new EventHandler<WindowEvent>() {
                     @Override
