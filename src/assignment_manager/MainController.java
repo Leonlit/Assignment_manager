@@ -333,15 +333,15 @@ public class MainController implements Initializable {
     private void assignmentAlert (ParsedData data) {
         noticeTitle.setText(data.getTitle());
         noticeDueDate.setText("" + data.getDay() + "/" + data.getMonth() + "/" + data.getYear());
-        String extra = "black", text = "";
+        String color = "black", text = "";
         if (data.taskDued()) {
-            extra = "red";
+            color = "red";
             text = "Dued " + Math.abs(data.daysLeft()) + " days ago";
         }else {
-            extra = "green";
+            color = "green";
             text = "Due in " + data.daysLeft();
         }
-        noticeDayLeft.setStyle("-fx-text-fill:" + extra);
+        noticeDayLeft.setStyle("-fx-text-fill:" + color);
         noticeDayLeft.setText(text);
     }
     

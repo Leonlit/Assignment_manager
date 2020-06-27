@@ -74,19 +74,20 @@ public class AddNewController implements Initializable {
                 text.setStyle("-fx-font:14px Georgia;"
                             + "-fx-font-weight:800;");
                 Button confirm = new Button("Confirm");
+                
                 confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
                         int stats = DB.addData(title, dueDate);
                         if (stats > 0 ) {
-                           confirm.setVisible(false);
                            text.setText("Succefully Added the record!!!");
                        }else {
-                            confirm.setVisible(false);
                             text.setText("Failed to add the record to Database!!!");
                         }
+                        confirm.setVisible(false);
                     }
                 });
+                
                 addPageNotice.setOnCloseRequest(new EventHandler<WindowEvent>() {
                     @Override
                     public void handle(WindowEvent we) {

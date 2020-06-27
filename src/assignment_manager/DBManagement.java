@@ -18,7 +18,7 @@ public class DBManagement {
     private final String HOST = "jdbc:derby://localhost:1527/Assignment_manager";
     private final String USER = "leonlit";
     private final String PASSWORD = "Nw>u)tp\\tvu4$Sb_";
-    public ArrayList<ParsedData> data = new ArrayList<ParsedData>();
+    public ArrayList<ParsedData> data = new ArrayList<>();
     
     public DBManagement() {
         try {

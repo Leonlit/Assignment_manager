@@ -3,7 +3,16 @@ package assignment_manager;
 import java.time.YearMonth;
 import java.util.Calendar;
 
-public class ParsedData {
+//basic structure of the parsedData
+abstract class data {
+    abstract public int getID ();
+    abstract public int getDay (); 
+    abstract public int getIndex (); 
+    abstract public int getMonth (); 
+    abstract public int getYear ();
+}
+
+public class ParsedData extends data{
     private String dueDate[];
     private String title;
     private int ID;
@@ -17,10 +26,12 @@ public class ParsedData {
         this.index = index;
     }
     
+    @Override
     public int getID () {
         return ID;
     }
     
+    @Override
     public int getDay () {
         return Integer.parseInt(dueDate[2]);
     }
@@ -29,6 +40,7 @@ public class ParsedData {
         index = newIndex;
     }
     
+    @Override
     public int getIndex() {
         return index;
     }
@@ -37,10 +49,12 @@ public class ParsedData {
         return String.join("-", dueDate);
     }
     
+    @Override
     public int getMonth () {
         return Integer.parseInt(dueDate[1]);
     }
     
+    @Override
     public int getYear () {
         return Integer.parseInt(dueDate[0]);
     }
