@@ -3,66 +3,13 @@ package assignment_manager;
 import java.time.YearMonth;
 import java.util.Calendar;
 
-//basic structure of the parsedData
-abstract class data {
-    abstract public int getID ();
-    abstract public int getDay (); 
-    abstract public int getIndex (); 
-    abstract public int getMonth (); 
-    abstract public int getYear ();
-}
-
-public class ParsedData extends data{
-    private String dueDate[];
-    private String title;
-    private int ID;
-    private int index;
-    private boolean isDued;
+public class ParsedData extends Data{
+    public boolean isDued;
     
     public ParsedData (int ID, int index, String title, String dueDate) {
-        this.dueDate = dueDate.split("-");
-        this.title = title;
-        this.ID = ID;
-        this.index = index;
+        super(ID, index, title, dueDate);
     }
-    
-    @Override
-    public int getID () {
-        return ID;
-    }
-    
-    @Override
-    public int getDay () {
-        return Integer.parseInt(dueDate[2]);
-    }
-    
-    public void updateIndex(int newIndex) {
-        index = newIndex;
-    }
-    
-    @Override
-    public int getIndex() {
-        return index;
-    }
-    
-    public String getDueDate () {
-        return String.join("-", dueDate);
-    }
-    
-    @Override
-    public int getMonth () {
-        return Integer.parseInt(dueDate[1]);
-    }
-    
-    @Override
-    public int getYear () {
-        return Integer.parseInt(dueDate[0]);
-    }
-    
-    public String getTitle () {
-        return title;
-    }
-    
+        
     public Boolean taskDued () {
         return isDued;
     }
