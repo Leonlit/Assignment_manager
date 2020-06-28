@@ -338,8 +338,13 @@ public class MainController implements Initializable {
             color = "red";
             text = "Dued " + Math.abs(data.daysLeft()) + " days ago";
         }else {
-            color = "green";
-            text = "Due in " + data.daysLeft();
+            if (data.daysLeft() == 0) {
+                color = "red";
+                text = "Due Today!!!";
+            }else {
+                color = "green";
+                text = "Due in " + data.daysLeft();
+            }
         }
         noticeDayLeft.setStyle("-fx-text-fill:" + color);
         noticeDayLeft.setText(text);
