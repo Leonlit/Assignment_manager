@@ -24,7 +24,7 @@ public class DBManagement {
         try {
             Connection con = DriverManager.getConnection(HOST, USER, PASSWORD);
             Statement sql = con.createStatement();
-            String query = "SELECT * FROM LEONLIT.\"Assignments\"";
+            String query = "SELECT * FROM Assignments";
             ResultSet result = sql.executeQuery(query);
             int counter = 0;
             while (result.next()) {
@@ -45,7 +45,7 @@ public class DBManagement {
         int stats = 1;
         try {
             Connection con = DriverManager.getConnection(HOST, USER, PASSWORD);
-            PreparedStatement pstmt = con.prepareStatement("INSERT INTO LEONLIT.\"Assignments\""
+            PreparedStatement pstmt = con.prepareStatement("INSERT INTO Assignments"
                                                            + "(TITLE, DUEDATE) VALUES (?, ?)", 
                                                            Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, title);
@@ -79,7 +79,7 @@ public class DBManagement {
         try {
             Connection con = DriverManager.getConnection(HOST, USER, PASSWORD);
             Statement sql = con.createStatement(); //creating a statement container
-            String query = "DELETE FROM LEONLIT.\"Assignments\" WHERE ID=" + ID;
+            String query = "DELETE FROM Assignments WHERE ID=" + ID;
             stats = sql.executeUpdate(query);
             if (stats == 0) {
                 throw new SQLException();
@@ -96,12 +96,13 @@ public class DBManagement {
         try {
             Connection con = DriverManager.getConnection(HOST, USER, PASSWORD);
             Statement sql = con.createStatement(); //creating a statement container
-            String query = "UPDATE LEONLIT.\"Assignments\" SET TITLE='" + newTitle 
+            String query = "UPDATE Assignments SET TITLE='" + newTitle 
                             + "' ,DUEDATE='" + newDueDate + "' WHERE ID=" + ID;
             stats = sql.executeUpdate(query);
             if (stats == 0) {
                 throw new SQLException();
             }
+            updateDataIndex();
         }catch(SQLException ex) {
             showDBErr("failed to update record\n\n" + ex);
         }
