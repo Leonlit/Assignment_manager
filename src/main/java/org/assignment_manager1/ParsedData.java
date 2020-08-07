@@ -1,4 +1,4 @@
-package assignment_manager;
+package org.assignment_manager1;
 
 import java.time.YearMonth;
 import java.util.Calendar;

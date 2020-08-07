@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment_manager;
+package org.assignment_manager1;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

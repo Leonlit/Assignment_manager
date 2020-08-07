@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment_manager;
+package org.assignment_manager1;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,7 +17,7 @@ import java.util.Comparator;
 public class DBManagement {
     private final String HOST = "jdbc:derby://localhost:1527/Assignment_manager";
     private final String USER = "leonlit";
-    private final String PASSWORD = "Nw>u)tp\\tvu4$Sb_";
+    private final String PASSWORD = "test";
     public ArrayList<ParsedData> data = new ArrayList<ParsedData>();
     
     public DBManagement() {
