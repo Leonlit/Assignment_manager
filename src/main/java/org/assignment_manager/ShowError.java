@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.assignment_manager1;
+package org.assignment_manager;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,6 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+//class for displaying errors (based on the string provided)
+// @param stageTitle - The title for the pop-up window in String form
+// @param message    - The message to be displayed, in String form
 public class ShowError {
     public static void showError (String stageTitle, String message) {
         Stage addPageNotice = new Stage();

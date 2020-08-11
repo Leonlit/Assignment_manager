@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="240.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.assignment_manager1.EditDataController">
+<AnchorPane id="AnchorPane" prefHeight="240.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.assignment_manager.EditDataController">
    <children>
       <TextField fx:id="editTitle" layoutX="143.0" layoutY="49.0" prefHeight="25.0" prefWidth="389.0" AnchorPane.leftAnchor="143.0" AnchorPane.rightAnchor="68.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" graphicTextGap="6.0" layoutX="83.0" layoutY="48.0" text="Title " textAlignment="CENTER">

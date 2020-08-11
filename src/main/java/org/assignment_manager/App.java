@@ -1,8 +1,4 @@
-package org.assignment_manager1;
-
-/**
- * JavaFX App
- */
+package org.assignment_manager;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
