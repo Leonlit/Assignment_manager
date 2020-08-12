@@ -15,11 +15,10 @@ public class App extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-        stage.setTitle("Assignment Manager - v0.5.1");
+        stage.setTitle("Assignment Manager - v1.0.1");
     }
     
     public static void main(String[] args) {
         launch(args);
     }
-    
 }

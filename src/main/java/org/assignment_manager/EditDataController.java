@@ -21,11 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-/**
- * FXML Controller class
- *
- * @author User
- */
+
 public class EditDataController implements Initializable {
 
     private DBManagement DBObj;
