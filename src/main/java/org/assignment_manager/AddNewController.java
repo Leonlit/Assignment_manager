@@ -30,6 +30,7 @@ public class AddNewController implements Initializable {
     @FXML
     private DatePicker createNewDueDate;
     
+    //
     @FXML
     public void addData () {
         String errorText = "";
@@ -60,7 +61,7 @@ public class AddNewController implements Initializable {
                 BorderPane layout= new BorderPane();
                 VBox childs = new VBox();
 
-                Label text = new Label("Confirm to create " + title + ",\n that's dued in " + dueDate +"?");
+                Label text = new Label("Confirm to create " + title + ",\n that's due in " + dueDate +"?");
                 text.setStyle("-fx-font:14px Georgia;"
                             + "-fx-font-weight:800;");
                 Button confirm = new Button("Confirm");
@@ -109,10 +110,7 @@ public class AddNewController implements Initializable {
         this.stage = stage;
         this.DB = DB;
     }
-    
-    /**
-     * Initializes the controller class.
-     */
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO

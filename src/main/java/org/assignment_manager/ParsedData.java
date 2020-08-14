@@ -33,7 +33,7 @@ public class ParsedData extends Data{
         if (monthGap == 0) {
             //get the days left 
             days = theDay - currDay;
-            //determine if its dued
+            //determine if it's already due
             if (days < 0) isDued = true;
         }else if (monthGap > 0) {
             //if the month gap is more than 0, need to calculate the days left for the month/s
@@ -47,7 +47,7 @@ public class ParsedData extends Data{
             //adding the current month days left, since maybe few days have passed
             days += currMonthDays - currDay;
         }else {
-            //if the month gap is less than 0 it means that the assignment is dued
+            //if the month gap is less than 0 it means that the assignment is already due
             //the system will then assign the current day number to the variable days
             //and then get the days for previos month/s
             days = currDay;
@@ -81,7 +81,7 @@ public class ParsedData extends Data{
                 totalDays += getDaysForMonth(year, currMonth + x);
             }
         }else {
-            //when the assignment is dued
+            //when the assignment is due
             for (int x = -1;x>=offset;x--) {
                 totalDays += getDaysForMonth(year, currMonth + x);
             }
