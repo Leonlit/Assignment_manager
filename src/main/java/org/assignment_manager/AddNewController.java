@@ -21,7 +21,6 @@ import javafx.stage.WindowEvent;
 public class AddNewController implements Initializable {
 
     private Stage stage;                            //the object that store the methods for handling the window behaviour
-    private Stage addPageNotice;
     private DBManagement DB;                        //the object that store the methods that are used in DB handling 
     private boolean managingOneRecord = false;      //we set that only one comfirmation window could be created at one time
     
@@ -68,7 +67,7 @@ public class AddNewController implements Initializable {
             //
             if (!managingOneRecord) {
                 managingOneRecord = true;
-                addPageNotice = new Stage();
+                Stage addPageNotice = new Stage();
                 //since to use a varible value in the event handle need to be in constant
                 final String TITLE = newTitle;
                 final String DUEDATE = newDueDate;
@@ -137,10 +136,9 @@ public class AddNewController implements Initializable {
     //storin the required data
     // @param DB    - the object that contains method for handling database operations
     // @param stage - A Stage class object for managing the window
-    public void setupAddingData (DBManagement DB, Stage stage, Stage popUpStage) {
+    public void setupAddingData (DBManagement DB, Stage stage) {
         this.stage = stage;
         this.DB = DB;
-        this.addPageNotice = popUpStage;
     }
 
     @Override

@@ -60,7 +60,7 @@ public class MainController implements Initializable {
 
             AddNewController controller = loader.getController();
             //passing dataabse object, the stage object to the cotroller file and the stage for pop up
-            controller.setupAddingData(DB, addNew, popUpStage);
+            controller.setupAddingData(DB, addNew);
             
             Scene addAssignment = new Scene(root);
             addNew.setScene(addAssignment);
@@ -327,7 +327,7 @@ public class MainController implements Initializable {
         BorderPane layout= new BorderPane();
         VBox childs = new VBox();
         
-        Label text = new Label("Confirm to delete \"" + data.getTitle() + "\"?");
+        Label text = new Label("Confirm to delete \"" + data.getTitle() + "\"? \n[Double click the button to delete the Assignment]");
         Button confirm = new Button("Confirm");
         confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
