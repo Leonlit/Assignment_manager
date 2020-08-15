@@ -40,6 +40,21 @@ CREATE TABLE Assignments (
 After that, you can now start up your database server and then try and run the project. It should be working right away
 
 
+## Screenshots
+
+### Start-up
+![start-up of the program](https://github.com/Leonlit/Assignment_manager/blob/master/img/start_up.png?raw=true)
+
+### Example when there's record in the database
+![example view when there's record in database](https://github.com/Leonlit/Assignment_manager/blob/master/img/example_view.png?raw=true)
+
+### Adding new Assignment into the database
+![example view when there's record in database](https://github.com/Leonlit/Assignment_manager/blob/master/img/add_new.png?raw=true)
+
+### Editing existing Assignment data
+![example view when there's record in database](https://github.com/Leonlit/Assignment_manager/blob/master/img/edit.png?raw=true)
+
+
 ## Contact
 If you have any question or suggestion regarding the project, feel free to contact me. If you found any bugs in the program, please contact me if you can. Thanks :D 
 
