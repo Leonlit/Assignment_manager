@@ -49,10 +49,10 @@ After that, you can now start up your database server and then try and run the p
 ![example view when there's record in database](https://github.com/Leonlit/Assignment_manager/blob/master/img/example_view.png?raw=true)
 
 ### Adding new Assignment into the database
-![example view when there's record in database](https://github.com/Leonlit/Assignment_manager/blob/master/img/add_new.png?raw=true)
+![Adding data into the manager](https://github.com/Leonlit/Assignment_manager/blob/master/img/add_new.png?raw=true)
 
 ### Editing existing Assignment data
-![example view when there's record in database](https://github.com/Leonlit/Assignment_manager/blob/master/img/edit.png?raw=true)
+![Editing existing data](https://github.com/Leonlit/Assignment_manager/blob/master/img/edit.png?raw=true)
 
 
 ## Contact
