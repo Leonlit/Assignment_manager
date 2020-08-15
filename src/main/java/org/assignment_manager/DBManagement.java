@@ -53,7 +53,7 @@ public class DBManagement {
     //                  1 means success 
     //                  -1 would mean the operaion failed
     public int addData (String title, String dueDate) {
-        int stats = 1;
+        int stats = 0;
         try {
             Connection con = DriverManager.getConnection(HOST, USER, PASSWORD);
             //used perpared statement to avoid injections
@@ -106,9 +106,6 @@ public class DBManagement {
             PreparedStatement pstmt = con.prepareStatement("DELETE FROM Assignments WHERE ID=?"); //creating a statement container
             pstmt.setInt(1, ID);
             stats = pstmt.executeUpdate();;
-            if (stats == 0) {
-                throw new SQLException();
-            }
             updateDataIndex();
         }catch(SQLException ex) {
             showDBErr("failed to delete record\n\n" + ex);

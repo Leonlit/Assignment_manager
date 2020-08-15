@@ -54,12 +54,13 @@ public class MainController implements Initializable {
     private void addNewAssignment(ActionEvent event) throws IOException  {
         if (!stageOpen) {
             Stage addNew = new Stage();
+            Stage popUpStage = new Stage();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addNew.fxml"));
             Parent root = loader.load();
 
             AddNewController controller = loader.getController();
-            //passing dataabse object and the stage object to the cotroller file
-            controller.setupAddingData(DB, addNew);
+            //passing dataabse object, the stage object to the cotroller file and the stage for pop up
+            controller.setupAddingData(DB, addNew, popUpStage);
             
             Scene addAssignment = new Scene(root);
             addNew.setScene(addAssignment);
@@ -179,7 +180,8 @@ public class MainController implements Initializable {
             //if the current index is the current day according to user machine, change the style of the grid item
             //to indicate the differences
             if (x == ParsedData.getCurrDayOfMonth() - 1 && currMonthNumber == ParsedData.getCurrMonth()) {
-                temp.setStyle(temp.getStyle() + "-fx-text-fill:blue;-fx-background-color:white;");
+                temp.setStyle(temp.getStyle() + "-fx-text-fill:blue;"
+                                                + "-fx-background-color:white;");
             }else {
                 //now to find those task that's has been due or still available
                 //light green will means that the task is still available and haven't due yet
@@ -213,8 +215,8 @@ public class MainController implements Initializable {
                     });
                     
                 }
-                calendar.add(temp, x%7, x/7);
             }
+            calendar.add(temp, x%7, x/7);
         }
     }
     
@@ -332,7 +334,7 @@ public class MainController implements Initializable {
             public void handle(MouseEvent e) {
                 //delete data from database using the data ID
                int stats = DB.deleteData(data.getID());
-               if (stats > 0 ) {
+               if (stats == 0 ) {
                    //if the stats of the operation is 1 that means that the operation is succesfull
                    confirm.setDisable(true);
                    text.setText("Succefully Deleted the record!!!");

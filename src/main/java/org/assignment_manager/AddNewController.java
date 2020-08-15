@@ -21,6 +21,7 @@ import javafx.stage.WindowEvent;
 public class AddNewController implements Initializable {
 
     private Stage stage;                            //the object that store the methods for handling the window behaviour
+    private Stage addPageNotice;
     private DBManagement DB;                        //the object that store the methods that are used in DB handling 
     private boolean managingOneRecord = false;      //we set that only one comfirmation window could be created at one time
     
@@ -67,7 +68,7 @@ public class AddNewController implements Initializable {
             //
             if (!managingOneRecord) {
                 managingOneRecord = true;
-                Stage addPageNotice = new Stage();
+                addPageNotice = new Stage();
                 //since to use a varible value in the event handle need to be in constant
                 final String TITLE = newTitle;
                 final String DUEDATE = newDueDate;
@@ -93,7 +94,6 @@ public class AddNewController implements Initializable {
                 addPageNotice.setTitle("Create new record Confirmation");
                 addPageNotice.show();
 
-
                 //when the confirm button is clicked, begin to add the data into the database
                 confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
@@ -101,7 +101,7 @@ public class AddNewController implements Initializable {
                         //using the addData method that's in the DBManagement.java to add data into Database
                         int result = DB.addData(TITLE, DUEDATE);
                         //if the returned value is 1, it means that the operation is succesfull
-                        if (result > 0 ) {
+                        if (result == 0 ) {
                             //change the message displayed in the window
                            text.setText("Succefully Added the record!!!");
                        }else {
@@ -137,9 +137,10 @@ public class AddNewController implements Initializable {
     //storin the required data
     // @param DB    - the object that contains method for handling database operations
     // @param stage - A Stage class object for managing the window
-    public void setupAddingData (DBManagement DB, Stage stage) {
+    public void setupAddingData (DBManagement DB, Stage stage, Stage popUpStage) {
         this.stage = stage;
         this.DB = DB;
+        this.addPageNotice = popUpStage;
     }
 
     @Override
