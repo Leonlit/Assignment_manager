@@ -34,7 +34,7 @@ public class MainController implements Initializable {
     private int currMonthNumber = 0;
     private boolean stageOpen = false;      //limiting user so one window only can be opened for creating new assignment
     private boolean showingAll = false;     //did user choose to see all assignment available?
-    private boolean editOpen = false;       //limiting only one edit assignment window to be created
+    private boolean editOpen = false;       //limiting only one edit assignment window to be created at one time
     
     public static DBManagement DB;
     public static int currYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -318,7 +318,7 @@ public class MainController implements Initializable {
     //When deleting the data we need to first ask the user if he really want to delete it.
     //if he or she really confirmed that the data can be deleted then proceed with the deletion process
     // @param data - a ParsedData object which contains the data we need to delete the data from database
-    //              #refer to ParsedData.java
+    //              #refer to ParsedData.java and DBManagement.java for more information
     private void deleteData (ParsedData data) {
         Stage confirmation = new Stage();
         
@@ -358,7 +358,9 @@ public class MainController implements Initializable {
     
     //construct a new window for editing the existing data by opening the editData.fxml
     //When users want to edit the data for an assignment, we need to get the newly provided title 
-    //as well as the new due date. If any of them are empty, the previous data would be used 
+    //as well as the new due date. If any of them are empty, the previous data would be used
+    // @param data - a ParsedData object which contains the data we need to edit the data from database
+    //              #refer to ParsedData.java and DBManagement.java for more information
     private void editData (ParsedData data) {
         if (!editOpen) {
             try {
