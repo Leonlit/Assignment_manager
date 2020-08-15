@@ -1,7 +1,7 @@
 # Assignment Manager
 
 
-This is a assignments manager which are created using Javafx1.8 (But later migrated to Javafx14). The project are created using the Maven to manage the build process. The project used Derby which is a RDBMS that could be used with Java program. The program could let its user to be able to distinguise the available assignment by sorting the assignment according to their due date. As well as different background color for different assignment status (still got time left, already due, and almost times up)
+This is an assignments manager which are created using Javafx1.8 (But later migrated to Javafx14). The project is created using the Maven to manage the build process. The project used Derby, which is an RDBMS that could be used with the Java program. The program could let its user be able to distinguish the available assignment by sorting the assignment according to their due date. As well as the different background colour for different assignment status (still got time left, already due, and almost times up)
 
 
 # Setup
