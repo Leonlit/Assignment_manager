@@ -10,4 +10,12 @@
                 <goal>javafx:run</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-Deploy</actionName>
+            <displayName>Deploy</displayName>
+            <goals>
+                <goal>mvn</goal>
+                <goal>jfx:jar</goal>
+            </goals>
+        </action>
     </actions>

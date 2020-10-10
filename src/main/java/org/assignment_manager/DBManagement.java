@@ -19,6 +19,7 @@ public class DBManagement {
     //constructer used to get all data from DB an store them inside the data object
     public DBManagement() {
         try {
+            Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
             //making sure that the table exist before doing any database operation
             makeSureTableExist("Assignments");
@@ -43,6 +44,8 @@ public class DBManagement {
             updateDataIndex();
         }catch (SQLException ex) {
             showDBErr("Connection error when connecting to the server.\n\n" + ex.getMessage());
+        }catch (ClassNotFoundException ex) {
+            showDBErr("Sqlite driver not found!!!\n\n" + ex.getMessage());
         }finally{
             try{
                 if(conn != null) {
@@ -76,6 +79,7 @@ public class DBManagement {
     public int addData (String title, String dueDate) {
         int stats = 0;
         try {
+            Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
             makeSureTableExist("Assignments");
             //used perpared statement to avoid injections
@@ -112,6 +116,8 @@ public class DBManagement {
             //since we are adding data into the database from different page, we need to keep track of the operation
             //so that we can decide to close the window or keep it open after adding (refer to AddNewController.java)
             stats = -1;
+        }catch (ClassNotFoundException ex) {
+            showDBErr("Sqlite driver not found!!!\n\n" + ex.getMessage());
         }finally{
             try{
                 if(conn != null) {
@@ -133,6 +139,7 @@ public class DBManagement {
     public int deleteData (int ID) {
         int stats = 0;
         try {
+            Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
             makeSureTableExist("Assignments");
             PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Assignments WHERE ID=?"); //creating a statement container
@@ -142,6 +149,8 @@ public class DBManagement {
         }catch(SQLException ex) {
             showDBErr("failed to delete record\n\n" + ex);
             stats = -1;
+        }catch (ClassNotFoundException ex) {
+            showDBErr("Sqlite driver not found!!!\n\n" + ex.getMessage());
         }finally{
             try{
                 if(conn != null) {
@@ -165,6 +174,7 @@ public class DBManagement {
     public int editData (int ID, String newTitle, String newDueDate) {
         int stats = 0;
         try {
+            Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
             makeSureTableExist("Assignments");
             PreparedStatement pstmt = conn.prepareStatement("UPDATE Assignments SET TITLE=? ,DUEDATE=? WHERE ID=?");
@@ -179,6 +189,8 @@ public class DBManagement {
         }catch(SQLException ex) {
             stats = -1;
             showDBErr("failed to update record\n\n" + ex);
+        }catch (ClassNotFoundException ex) {
+            showDBErr("Sqlite driver not found!!!\n\n" + ex.getMessage());
         }finally{
             try{
                 if(conn != null) {
