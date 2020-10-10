@@ -11,9 +11,7 @@ import java.util.Comparator;
 
 public class DBManagement {
     //making database details constant
-    private final String HOST = "jdbc:derby://localhost:1527/Assignment_manager";
-    private final String USER = "leonlit";
-    private final String PASSWORD = "test";
+    private Connection conn;
 
     //the array list that's used to contain all the assignments that's stored in the database
     public ArrayList<ParsedData> data = new ArrayList<ParsedData>();
@@ -21,8 +19,10 @@ public class DBManagement {
     //constructer used to get all data from DB an store them inside the data object
     public DBManagement() {
         try {
-            Connection con = DriverManager.getConnection(HOST, USER, PASSWORD);
-            Statement sql = con.createStatement();
+            conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
+            //making sure that the table exist before doing any database operation
+            makeSureTableExist("Assignments");
+            Statement sql = conn.createStatement();
             String query = "SELECT * FROM Assignments";
             ResultSet result = sql.executeQuery(query);
             int counter = 0;
@@ -43,7 +43,28 @@ public class DBManagement {
             updateDataIndex();
         }catch (SQLException ex) {
             showDBErr("Connection error when connecting to the server.\n\n" + ex.getMessage());
-        }    
+        }finally{
+            try{
+                if(conn != null) {
+                    conn.close();
+                }
+            }
+            catch(SQLException e){
+                showDBErr(e.getMessage());
+            }
+        }
+    }
+    
+    //Make sure the table exists in the database to avoid error.
+    //If the table doest not exist, create the table.
+    //  @param tableName   - the name of the table to check.
+    private void makeSureTableExist (String tableName) throws SQLException {
+        String creatTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName +" ("
+                + "ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                + "TITLE LONG VARCHAR,"
+                + "DUEDATE DATE)";
+        Statement stmt = conn.createStatement();
+        stmt.execute(creatTableQuery);
     }
     
     //adding data into the DB
@@ -55,9 +76,10 @@ public class DBManagement {
     public int addData (String title, String dueDate) {
         int stats = 0;
         try {
-            Connection con = DriverManager.getConnection(HOST, USER, PASSWORD);
+            conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
+            makeSureTableExist("Assignments");
             //used perpared statement to avoid injections
-            PreparedStatement pstmt = con.prepareStatement("INSERT INTO Assignments"
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Assignments"
                                                            + "(TITLE, DUEDATE) VALUES (?, ?)", 
                                                            Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, title);
@@ -90,6 +112,15 @@ public class DBManagement {
             //since we are adding data into the database from different page, we need to keep track of the operation
             //so that we can decide to close the window or keep it open after adding (refer to AddNewController.java)
             stats = -1;
+        }finally{
+            try{
+                if(conn != null) {
+                    conn.close();
+                }
+            }
+            catch(SQLException e){
+                showDBErr(e.getMessage());
+            }
         }
         return stats;
     }
@@ -102,14 +133,24 @@ public class DBManagement {
     public int deleteData (int ID) {
         int stats = 0;
         try {
-            Connection con = DriverManager.getConnection(HOST, USER, PASSWORD);
-            PreparedStatement pstmt = con.prepareStatement("DELETE FROM Assignments WHERE ID=?"); //creating a statement container
+            conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
+            makeSureTableExist("Assignments");
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Assignments WHERE ID=?"); //creating a statement container
             pstmt.setInt(1, ID);
             stats = pstmt.executeUpdate();;
             updateDataIndex();
         }catch(SQLException ex) {
             showDBErr("failed to delete record\n\n" + ex);
             stats = -1;
+        }finally{
+            try{
+                if(conn != null) {
+                    conn.close();
+                }
+            }
+            catch(SQLException e){
+                showDBErr(e.getMessage());
+            }
         }
         return stats;
     }
@@ -124,8 +165,9 @@ public class DBManagement {
     public int editData (int ID, String newTitle, String newDueDate) {
         int stats = 0;
         try {
-            Connection con = DriverManager.getConnection(HOST, USER, PASSWORD);
-            PreparedStatement pstmt = con.prepareStatement("UPDATE Assignments SET TITLE=? ,DUEDATE=? WHERE ID=?");
+            conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
+            makeSureTableExist("Assignments");
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE Assignments SET TITLE=? ,DUEDATE=? WHERE ID=?");
             pstmt.setString(1, newTitle);
             pstmt.setString(2, newDueDate);
             pstmt.setInt(3, ID);
@@ -137,6 +179,15 @@ public class DBManagement {
         }catch(SQLException ex) {
             stats = -1;
             showDBErr("failed to update record\n\n" + ex);
+        }finally{
+            try{
+                if(conn != null) {
+                    conn.close();
+                }
+            }
+            catch(SQLException e){
+                showDBErr(e.getMessage());
+            }
         }
         return stats;
     }

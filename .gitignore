@@ -2,3 +2,8 @@
 /dist/
 /Assignment_manager/
 /target/
+.vscode/
+*.db
+.settings/
+.classpath
+.project
