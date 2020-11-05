@@ -104,6 +104,7 @@ public class DBManagement {
                     //adding the newly added assignment object into the ArrayList, using the retrieved ID, and its current index in the ArrayList
                     //by using the current size of the ArrayList. Then, as well as the title and due date of the assignment
                     final int taskYear = Integer.parseInt(dueDate.substring(0, 4));
+                    //if the task is in the current year, update the data and indexes
                     if(taskYear == MainController.currYear) {
                         data.add(new ParsedData(newID, data.size(), title, dueDate));
                         updateDataIndex();  //reposition all assignment objects according to their index (refers back to the Data class in Data.java)
@@ -189,9 +190,7 @@ public class DBManagement {
             if (stats == 0) {
                 throw new SQLException();
             }
-            if (Integer.parseInt(newDueDate) == MainController.currYear) {
-                updateDataIndex();
-            }
+            updateDataIndex();
         }catch(SQLException ex) {
             stats = -1;
             showDBErr("failed to update record\n\n" + ex);
@@ -226,7 +225,11 @@ public class DBManagement {
         //since just now we're only updating the position of the elements, we need to also update the 
         //index stored in the object
         for (int x = 0; x< data.size();x++) {
-            data.get(x).updateIndex(x);
+            ParsedData currentItem = data.get(x);
+            if (currentItem.getYear() != MainController.currYear) {
+                data.remove(x);
+            }
+            currentItem.updateIndex(x);
         }
     }
     

@@ -116,6 +116,7 @@ public class MainController implements Initializable {
         }
     }
     
+    //change calendar view to next year
     @FXML
     private void nextYear() {
         currYear++;
@@ -124,6 +125,7 @@ public class MainController implements Initializable {
         replaceCurrYearLabelText(currYear);
     }
     
+    //change calendar view to previous year
     @FXML
     private void prevYear() {
         currYear--;
