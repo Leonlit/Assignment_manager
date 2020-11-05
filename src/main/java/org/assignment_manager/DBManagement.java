@@ -17,15 +17,16 @@ public class DBManagement {
     public ArrayList<ParsedData> data = new ArrayList<ParsedData>();
     
     //constructer used to get all data from DB an store them inside the data object
-    public DBManagement() {
+    public DBManagement(int year) {
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
             //making sure that the table exist before doing any database operation
             makeSureTableExist("Assignments");
-            Statement sql = conn.createStatement();
-            String query = "SELECT * FROM Assignments";
-            ResultSet result = sql.executeQuery(query);
+            String query = "SELECT * FROM Assignments WHERE strftime('%Y', duedate)=?;";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, Integer.toString(year));
+            ResultSet result = pstmt.executeQuery();
             int counter = 0;
             //after getting the result from the database, store the result into the ArrayList one by one
             while (result.next()) {
@@ -102,8 +103,11 @@ public class DBManagement {
                     int newID = generatedKeys.getInt(1);
                     //adding the newly added assignment object into the ArrayList, using the retrieved ID, and its current index in the ArrayList
                     //by using the current size of the ArrayList. Then, as well as the title and due date of the assignment
-                    data.add(new ParsedData(newID, data.size(), title, dueDate));
-                    updateDataIndex();  //reposition all assignment objects according to their index (refers back to the Data class in Data.java)
+                    final int taskYear = Integer.parseInt(dueDate.substring(0, 4));
+                    if(taskYear == MainController.currYear) {
+                        data.add(new ParsedData(newID, data.size(), title, dueDate));
+                        updateDataIndex();  //reposition all assignment objects according to their index (refers back to the Data class in Data.java)
+                    }
                 }
                 else {
                     throw new SQLException("Creating user failed, no ID obtained.");
@@ -185,7 +189,9 @@ public class DBManagement {
             if (stats == 0) {
                 throw new SQLException();
             }
-            updateDataIndex();
+            if (Integer.parseInt(newDueDate) == MainController.currYear) {
+                updateDataIndex();
+            }
         }catch(SQLException ex) {
             stats = -1;
             showDBErr("failed to update record\n\n" + ex);

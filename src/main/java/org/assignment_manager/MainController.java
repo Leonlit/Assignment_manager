@@ -37,13 +37,13 @@ public class MainController implements Initializable {
     private boolean editOpen = false;       //limiting only one edit assignment window to be created at one time
     
     public static DBManagement DB;
-    public static int currYear = Calendar.getInstance().get(Calendar.YEAR);
+    public static int currYear;
     
     @FXML
     private GridPane calendar;
     
     @FXML
-    private Label currMonth, assignmentNumnber, noticeTitle, noticeDueDate, noticeDayLeft;
+    private Label currMonth, assignmentNumnber, noticeTitle, noticeDueDate, noticeDayLeft, currYearLabel;
     
     @FXML
     private ScrollPane itemListPane;
@@ -96,9 +96,11 @@ public class MainController implements Initializable {
     @FXML
     private void nextMonth() {
         if (currMonthNumber < 12) {
-            calendar.getChildren().clear();
             currMonthNumber++;
             refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+        }else {
+            currMonthNumber = 1;
+            nextYear();
         }
     }
     
@@ -106,10 +108,28 @@ public class MainController implements Initializable {
     @FXML
     private void prevMonth() {
         if (currMonthNumber > 1) {
-            calendar.getChildren().clear();
             currMonthNumber--;
             refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+        }else {
+            currMonthNumber = 12;
+            prevYear();
         }
+    }
+    
+    @FXML
+    private void nextYear() {
+        currYear++;
+        DB = new DBManagement(currYear);
+        refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+        replaceCurrYearLabelText(currYear);
+    }
+    
+    @FXML
+    private void prevYear() {
+        currYear--;
+        DB = new DBManagement(currYear);
+        refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+        replaceCurrYearLabelText(currYear);
     }
     
     //Show assignments for certain day
@@ -401,7 +421,7 @@ public class MainController implements Initializable {
         String color = "black", text = "";
         if (data.taskDued()) {
             color = "red";
-            text = "Dued " + Math.abs(data.daysLeft()) + " days ago";
+            text = "Due " + Math.abs(data.daysLeft()) + " days ago";
         }else {
             if (data.daysLeft() == 0) {
                 color = "red";
@@ -426,11 +446,16 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //initialising a database object for dealing with database operation like delete, add, update.
-        DB = new DBManagement();
+        currYear = Calendar.getInstance().get(Calendar.YEAR);
+        DB = new DBManagement(currYear);
         currMonthNumber = ParsedData.getCurrMonth();
-        
+        replaceCurrYearLabelText(currYear);
         //refresh the main page
         refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+    }
+    
+    private void replaceCurrYearLabelText(int year) {
+        currYearLabel.setText(Integer.toString(year));
     }
     
     //this mehtod refresh everthing in the main window

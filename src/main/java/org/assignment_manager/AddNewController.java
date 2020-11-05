@@ -39,6 +39,7 @@ public class AddNewController implements Initializable {
         try {
             //we want to see if there's any value set in the due date section
             newDueDate = createNewDueDate.getValue().toString();
+            System.out.println(newDueDate);
         }catch (NullPointerException err) {
             //if there's no due date set in the date picker field, show a pop up message
             errorText += "Error: A Due Date is needed for this assignment!!!\n";
@@ -48,13 +49,6 @@ public class AddNewController implements Initializable {
         //this operation does not need a try catch statement as empty value in the field means ""
         //which is a valid string
         String newTitle = createNewTitle.getText();
-        
-        //showing error base on some conditions 
-        //this app currently only support storing assignment for the current year only 
-        if (errorText.length() < 1 && Integer.parseInt(newDueDate.substring(0,4)) != MainController.currYear) {
-            errorText += "Error: This app only support saving task that's in the current year!!!\n";
-        }
-    
 
         //since no error will be produced when the value of the title text field is empty
         //we need to explicitly check for empty value

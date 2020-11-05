@@ -75,12 +75,6 @@ public class EditDataController implements Initializable {
             errText += "Error: A Due Date is needed for this assignment!!!\n";
         }
         
-        //checks if the errText is empty or not and if the yeaar specified in the date picker exceeds the current year.
-        //if yes, then add an error giving notice to the user that this program only support saving assignment for the current year
-        if (errText.length() < 1 && Integer.parseInt(newDueDate.substring(0,4)) != MainController.currYear) {
-            errText += "Error: This app only support saving task that's in the current year!!!\n";
-        }
-        
         //if there's no error produced when checking user's provided data continue with adding the data into the database
         //by first asking for permission
         if(errText.length() < 1) {

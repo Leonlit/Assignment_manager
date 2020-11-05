@@ -47,9 +47,9 @@
             <Insets left="10.0" />
          </padding>
       </GridPane>
-      <Pane fx:id="notisBoard" layoutY="369.0" prefHeight="233.0" prefWidth="455.0">
+      <Pane fx:id="notisBoard" layoutY="369.0" prefHeight="233.0" prefWidth="455.0" AnchorPane.bottomAnchor="0.0">
          <children>
-            <Label layoutX="49.0" layoutY="14.0" text="Number of Available Assignment : ">
+            <Label layoutX="49.0" layoutY="23.0" text="Number of Available Assignment : ">
                <font>
                   <Font name="Arial Black" size="19.0" />
                </font>
@@ -102,6 +102,21 @@
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
+      </Button>
+      <Label fx:id="currYearLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="156.0" layoutY="358.0" prefHeight="27.0" prefWidth="147.0" text="Year" AnchorPane.topAnchor="358.0">
+         <font>
+            <Font name="Arial Black" size="14.0" />
+         </font>
+      </Label>
+      <Button fx:id="prevYear" layoutX="68.0" layoutY="359.0" mnemonicParsing="false" onAction="#prevYear" text="Previous" AnchorPane.topAnchor="359.0">
+         <font>
+            <Font name="Arial Black" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="nextYear" layoutX="325.0" layoutY="359.0" mnemonicParsing="false" onAction="#nextYear" prefWidth="61.0" text="Next" AnchorPane.topAnchor="359.0">
+         <font>
+            <Font name="Arial Black" size="12.0" />
+         </font>
       </Button>
     </children>
 </AnchorPane>
