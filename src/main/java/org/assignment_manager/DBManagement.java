@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DBManagement {
     //making database details constant
@@ -134,6 +136,38 @@ public class DBManagement {
             }
         }
         return stats;
+    }
+    
+    public ParsedData getEarliest() {
+        ParsedData earliestItem = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            conn = DriverManager.getConnection("jdbc:sqlite:assignment_manager.db");
+            makeSureTableExist("Assignments");
+            String sqlQuery = "SELECT * FROM Assignments ORDER BY DUEDATE LIMIT 1;";
+            PreparedStatement pstmt = conn.prepareStatement(sqlQuery);
+            ResultSet result = pstmt.executeQuery();
+            //after getting the result from the database, store the result into the ArrayList one by one
+            if (result.next()) {
+                earliestItem = new ParsedData(result.getInt("ID"), 0,
+                                            result.getString("TITLE"),
+                                            result.getString("DUEDATE"));
+            }
+        } catch (ClassNotFoundException ex) {
+            showDBErr("Sqlite driver not found!!!\n\n" + ex.getMessage());
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try{
+                if(conn != null) {
+                    conn.close();
+                }
+            }
+            catch(SQLException e){
+                showDBErr(e.getMessage());
+            }
+        }
+        return earliestItem;
     }
     
     //deleting data from the database

@@ -37,6 +37,7 @@ public class MainController implements Initializable {
     private boolean editOpen = false;       //limiting only one edit assignment window to be created at one time
     
     public static DBManagement DB;
+    public static int currPresentYear;
     public static int currYear;
     
     @FXML
@@ -421,18 +422,17 @@ public class MainController implements Initializable {
         noticeTitle.setText(data.getTitle());
         noticeDueDate.setText("" + data.getDay() + "/" + data.getMonth() + "/" + data.getYear());
         String color = "black", text = "";
-        if (data.taskDued()) {
+        if (data.daysLeft() < 0) {
             color = "red";
             text = "Due " + Math.abs(data.daysLeft()) + " days ago";
+        }else if (data.daysLeft() == 0) {
+            color = "red";
+            text = "Due Today!!!";
         }else {
-            if (data.daysLeft() == 0) {
-                color = "red";
-                text = "Due Today!!!";
-            }else {
-                color = "green";
-                text = "Due in " + data.daysLeft();
-            }
+            color = "green";
+            text = "Due in " + data.daysLeft();
         }
+        
         noticeDayLeft.setStyle("-fx-text-fill:" + color);
         noticeDayLeft.setText(text);
     }
@@ -448,7 +448,8 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //initialising a database object for dealing with database operation like delete, add, update.
-        currYear = Calendar.getInstance().get(Calendar.YEAR);
+        currPresentYear = Calendar.getInstance().get(Calendar.YEAR);
+        currYear = currPresentYear;
         DB = new DBManagement(currYear);
         currMonthNumber = ParsedData.getCurrMonth();
         replaceCurrYearLabelText(currYear);
@@ -475,7 +476,7 @@ public class MainController implements Initializable {
         }
         try {
             //try and get the first assignment from the ArrayList
-            assignmentAlert(DB.data.get(0));
+            assignmentAlert(DB.getEarliest());
         }catch (NullPointerException | IndexOutOfBoundsException ex) {
             //no rows in the table
             assignmentAlert();
