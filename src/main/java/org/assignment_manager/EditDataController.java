@@ -77,7 +77,7 @@ public class EditDataController implements Initializable {
         boolean taskSetToPassedDate = ParsedData.checkIfTaskSetToPassedDate(newDueDate);
         
         if (taskSetToPassedDate) {
-            errText += "\nWarning: You're changing the task to a date that's older than the current day";
+            errText += "\nWarning: You're changing the task to a date that's older than the current Date";
         } 
         //if there's no error produced when checking user's provided data continue with adding the data into the database
         //by first asking for permission
