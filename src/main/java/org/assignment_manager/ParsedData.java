@@ -170,12 +170,14 @@ public class ParsedData extends Data{
         int newTaskYear = Integer.parseInt(dueDate.substring(0, 4));
         int newTaskMonth = Integer.parseInt(dueDate.substring(5, 7));
         int newTaskDay = Integer.parseInt(dueDate.substring(8, 10));
-        if (newTaskYear < MainController.currPresentYear) {
-            result = true;
-        }else if (newTaskMonth < presentMonth) {
-            result = true;
-        }else if (newTaskDay < presentDayOfMonth) {
-            result = true;
+        if (newTaskYear <= MainController.currPresentYear) {
+            if (newTaskYear < MainController.currPresentYear) {
+                result = true;
+            }else if (newTaskMonth < presentMonth) {
+                result = true;
+            }else if (newTaskDay < presentDayOfMonth) {
+                result = true;
+            }
         }
         return result;
     }
