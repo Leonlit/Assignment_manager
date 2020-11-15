@@ -202,7 +202,9 @@ public class MainController implements Initializable {
             
             //if the current index is the current day according to user machine, change the style of the grid item
             //to indicate the differences
-            if (x == ParsedData.getCurrDayOfMonth() - 1 && currMonthNumber == ParsedData.getCurrMonth()) {
+            if (x == ParsedData.getCurrDayOfMonth() - 1 && 
+                currMonthNumber == ParsedData.getCurrMonth() &&
+                currYear == currPresentYear) {
                 temp.setStyle(temp.getStyle() + "-fx-text-fill:blue;"
                                                 + "-fx-background-color:white;");
             }else {

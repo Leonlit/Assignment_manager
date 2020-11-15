@@ -74,7 +74,11 @@ public class EditDataController implements Initializable {
         }catch (NullPointerException err) {
             errText += "Error: A Due Date is needed for this assignment!!!\n";
         }
+        boolean taskSetToPassedDate = ParsedData.checkIfTaskSetToPassedDate(newDueDate);
         
+        if (taskSetToPassedDate) {
+            errText += "\nWarning: You're changing the task to a date that's older than the current day";
+        } 
         //if there's no error produced when checking user's provided data continue with adding the data into the database
         //by first asking for permission
         if(errText.length() < 1) {

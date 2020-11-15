@@ -45,6 +45,12 @@ public class AddNewController implements Initializable {
             errorText += "Error: A Due Date is needed for this assignment!!!\n";
         }
         
+        boolean taskSetToPassedDate = ParsedData.checkIfTaskSetToPassedDate(newDueDate);
+        
+        if (taskSetToPassedDate) {
+            errorText += "\nWarning: You're setting the task to a date that's older than the current Date";
+        } 
+        
         //then we get the title for the assignment
         //this operation does not need a try catch statement as empty value in the field means ""
         //which is a valid string

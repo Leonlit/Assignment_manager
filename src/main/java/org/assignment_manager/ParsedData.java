@@ -162,4 +162,21 @@ public class ParsedData extends Data{
         }
         return totalDays;
     }
+    
+    public static boolean checkIfTaskSetToPassedDate (String dueDate) {
+        boolean result = false;
+        int presentDayOfMonth = ParsedData.getCurrDayOfMonth();
+        int presentMonth = ParsedData.getCurrMonth();
+        int newTaskYear = Integer.parseInt(dueDate.substring(0, 4));
+        int newTaskMonth = Integer.parseInt(dueDate.substring(5, 7));
+        int newTaskDay = Integer.parseInt(dueDate.substring(8, 10));
+        if (newTaskYear < MainController.currPresentYear) {
+            result = true;
+        }else if (newTaskMonth < presentMonth) {
+            result = true;
+        }else if (newTaskDay < presentDayOfMonth) {
+            result = true;
+        }
+        return result;
+    }
 }
