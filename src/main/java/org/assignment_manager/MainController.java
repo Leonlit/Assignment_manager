@@ -279,21 +279,25 @@ public class MainController implements Initializable {
             dueDate.setStyle("-fx-font:15px System;"
                             + "-fx-font-weight:900;");
             
+            String textColor[] = {"red;", "darkorange;"};
+            String message = "";
             int daysLeftMore = currData.daysLeft();
-            if (!currData.taskDued()) {    
-                status = "left";
-                if (daysLeftMore == 0) {
-                    status = "left - today!";
-                    extra = "red;";
-                }else if (daysLeftMore < 4) {
-                   extra = "darkorange;";
+            
+            if (!currData.taskDued()) {
+                if (daysLeftMore < 4) {
+                   extra = textColor[1];
                 }
-            }else {
-                status = "doomed";
-                extra = "red;";
+                message = Math.abs(daysLeftMore) + " days left";
+            }else{
+                extra = textColor[0];
+                message = "Due " + Math.abs(daysLeftMore) + " days ago";
+                if (daysLeftMore == 0) {
+                    message = "Due Today";
+                }
             }
+            
             //creating a label to change the status of the assignment at the left hand side of the window
-            Label daysLeft = new Label(Math.abs(daysLeftMore) + " days " + status);
+            Label daysLeft = new Label(message);
             daysLeft.setStyle("-fx-font:15px System;"
                             + "-fx-font-weight:900;"
                             + "-fx-text-fill:" + extra);
