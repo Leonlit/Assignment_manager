@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -36,21 +37,21 @@ public class AddNewController implements Initializable {
     public void addData () {
         String errorText = "";
         String newDueDate = "";
+        String warningText = "";
+        
         try {
             //we want to see if there's any value set in the due date section
             newDueDate = createNewDueDate.getValue().toString();
+            boolean taskSetToPassedDate = ParsedData.checkIfTaskSetToPassedDate(newDueDate);
             System.out.println(newDueDate);
+            if (taskSetToPassedDate) {
+                warningText += "\nWarning: You're setting the task to a date that's older than the current Date";
+            } 
         }catch (NullPointerException err) {
             //if there's no due date set in the date picker field, show a pop up message
             errorText += "Error: A Due Date is needed for this assignment!!!\n";
         }
-        
-        boolean taskSetToPassedDate = ParsedData.checkIfTaskSetToPassedDate(newDueDate);
-        
-        if (taskSetToPassedDate) {
-            errorText += "\nWarning: You're setting the task to a date that's older than the current Date";
-        } 
-        
+
         //then we get the title for the assignment
         //this operation does not need a try catch statement as empty value in the field means ""
         //which is a valid string
@@ -63,8 +64,7 @@ public class AddNewController implements Initializable {
         }
         
         //if the length of the string is less than 1 means its empty, means that user has provided all the required data correctly
-        if (errorText.length() < 1) {
-            //
+        if (errorText.length() == 0) {
             if (!managingOneRecord) {
                 managingOneRecord = true;
                 Stage addPageNotice = new Stage();
@@ -75,19 +75,38 @@ public class AddNewController implements Initializable {
                 //setting up a confirmation window
                 BorderPane layout= new BorderPane();
                 VBox childs = new VBox();
+                Label warningLabel = new Label(""),
+                        errorLabel;
                 
-                Label text = new Label("Confirm to create " + TITLE + ",\n that's due in " + DUEDATE +"?");
-                text.setStyle("-fx-font:14px Georgia;"
-                            + "-fx-font-weight:800;");
+                String boxPadding = "-fx-padding: 10 20 10 20;";
+                
+                if (warningText.length() > 0) {
+                    warningLabel.setText(warningText);
+                    warningLabel.setStyle("-fx-font:14px Georgia;"
+                    + "-fx-font-weight:800;"
+                    + "-fx-text-fill:red;"
+                    + "-fx-max-witdh: 100;"
+                    + boxPadding);
+                    warningLabel.setTextAlignment(TextAlignment.CENTER);
+                    warningLabel.setWrapText(true);
+                    childs.getChildren().add(warningLabel);
+                }
+                
+                errorLabel = new Label("Confirm to create " + TITLE + ",\n that's due in " + DUEDATE +"?");
+                errorLabel.setStyle("-fx-font:14px Georgia;"
+                            + "-fx-font-weight:800;"
+                            + "-fx-max-witdh: 100;"
+                            + boxPadding);
+                errorLabel.setTextAlignment(TextAlignment.CENTER);
+                errorLabel.setWrapText(true);
                 Button confirm = new Button("Confirm");
-
-                childs.getChildren().addAll(text, confirm); 
-                text.setPadding(new Insets(10, 10, 20, 20));
+                
+                childs.getChildren().addAll(errorLabel, confirm); 
                 childs.setAlignment(Pos.CENTER);
 
                 layout.setCenter(childs);
 
-                Scene newScene = new Scene(layout, 400, 250);
+                Scene newScene = new Scene(layout, 400, 300);
 
                 addPageNotice.setScene(newScene);
                 addPageNotice.setTitle("Create new record Confirmation");
@@ -99,14 +118,15 @@ public class AddNewController implements Initializable {
                     public void handle(MouseEvent e) {
                         //using the addData method that's in the DBManagement.java to add data into Database
                         int result = DB.addData(TITLE, DUEDATE);
+                        warningLabel.setText("");
                         //if the returned value is 1, it means that the operation is succesfull
                         if (result == 0 ) {
                             //change the message displayed in the window
-                           text.setText("Succefully Added the record!!!");
+                           errorLabel.setText("Succefully Added the record!!!");
                        }else {
                             //if the returned value is not 1, it means that the operation failed
                             //so we need to change the message to give user a notice on the error
-                            text.setText("Failed to add the record to Database!!!");
+                            errorLabel.setText("Failed to add the record to Database!!!");
                         }
                         //hide the comfirm button so that user cannot re-click the button
                         confirm.setVisible(false);

@@ -27,6 +27,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.WindowEvent;
 
 public class MainController implements Initializable {
@@ -35,6 +36,7 @@ public class MainController implements Initializable {
     private boolean stageOpen = false;      //limiting user so one window only can be opened for creating new assignment
     private boolean showingAll = false;     //did user choose to see all assignment available?
     private boolean editOpen = false;       //limiting only one edit assignment window to be created at one time
+    private boolean openingDeleteWindow = false;
     
     public static DBManagement DB;
     public static int currPresentYear;
@@ -199,47 +201,57 @@ public class MainController implements Initializable {
                             + "-fx-border-color:black;");
             temp.setPrefHeight(45.0);
             temp.setPrefWidth(50.0);
+            boolean currPresentDay = false;
             
             //if the current index is the current day according to user machine, change the style of the grid item
             //to indicate the differences
             if (x == ParsedData.getCurrDayOfMonth() - 1 && 
                 currMonthNumber == ParsedData.getCurrMonth() &&
                 currYear == currPresentYear) {
+                currPresentDay = true;
                 temp.setStyle(temp.getStyle() + "-fx-text-fill:blue;"
                                                 + "-fx-background-color:white;");
-            }else {
-                //now to find those task that's has been due or still available
-                //light green will means that the task is still available and haven't due yet
-                taskColor = "lightgreen";
-                String extra = "";
-                //if this statement is true, then it means that this particular day has one or more assignment
-                //this is because we've stored the days that has assignment. so we can just skip the days that 
-                //don't have any assignment
-                if (taskDays.contains(x+1)) {
-                    ParsedData currItem = taskOnDay.get(taskDays.indexOf(x+1));
-                    //if the due date for the assignment is < 4, means is quite near
-                    //so we'll give it a orange color for its background color
-                    if (currItem.daysLeft() < 4) {
-                        taskColor = "#ffad34";
-                    }
-                    //but if the task has already due, we'll give it a red color for its background color
-                    if (currItem.taskDued() || currItem.daysLeft() == 0) {
-                        taskColor = "#DC143C";
-                        extra = "-fx-text-fill:white;";
-                    }
-                    temp.setStyle("-fx-background-color:" + taskColor + ";"
-                                + "-fx-padding:10.0;"
-                                + "-fx-border-width:1.0;"
-                                + "-fx-border-color:black;"
-                                + extra);
-                    temp.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent e) {
-                            showAssignmentOfDay(Integer.parseInt(((Label)e.getSource()).getText()));
-                        }
-                    });
-                    
+            }
+            
+            //now to find those task that's has been due or still available
+            //light green will means that the task is still available and haven't due yet
+            taskColor = "lightgreen";
+            String extra = "";
+            //if this statement is true, then it means that this particular day has one or more assignment
+            //this is because we've stored the days that has assignment. so we can just skip the days that 
+            //don't have any assignment
+            if (taskDays.contains(x+1)) {
+                ParsedData currItem = taskOnDay.get(taskDays.indexOf(x+1));
+                //if the due date for the assignment is < 4, means is quite near
+                //so we'll give it a orange color for its background color
+                if (currItem.daysLeft() < 4) {
+                    taskColor = "#ffad34";
                 }
+                //but if the task has already due, we'll give it a red color for its background color
+                if (currItem.taskDued() || currItem.daysLeft() == 0) {
+                    taskColor = "#DC143C";
+                    extra = "-fx-text-fill:white;";
+                }  
+                
+                temp.setStyle("-fx-background-color:" + taskColor + ";"
+                            + "-fx-padding:10.0;"
+                            + "-fx-border-width:1.0;"
+                            + "-fx-border-color:black;"
+                            + extra);
+                
+                if (currPresentDay) {
+                    temp.setStyle(temp.getStyle() + "-fx-text-fill:red;"
+                                                + "-fx-background-color:white;");
+                }
+                
+                temp.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        showAssignmentOfDay(Integer.parseInt(((Label)e.getSource()).getText()));
+                    }
+                });
+                    
+                
             }
             calendar.add(temp, x%7, x/7);
         }
@@ -325,7 +337,10 @@ public class MainController implements Initializable {
             deleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    deleteData(currData);
+                    if (!openingDeleteWindow) {
+                        openingDeleteWindow = true;
+                        deleteData(currData);
+                    }
                 }
             });
             
@@ -358,20 +373,35 @@ public class MainController implements Initializable {
         
         Label text = new Label("Confirm to delete \"" + data.getTitle() + "\"? \n[Double click the button to delete the Assignment]");
         Button confirm = new Button("Confirm");
+        
+        String boxPadding = "-fx-padding: 10 20 10 20;";
+        text.setStyle("-fx-font:14px Georgia;"
+                            + "-fx-font-weight:800;"
+                            + "-fx-max-witdh: 100;"
+                            + boxPadding);
+        text.setTextAlignment(TextAlignment.CENTER);
+        text.setWrapText(true);
         confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
                 //delete data from database using the data ID
-               int stats = DB.deleteData(data.getID());
-               if (stats == 0 ) {
-                   //if the stats of the operation is 1 that means that the operation is succesfull
-                   confirm.setDisable(true);
-                   text.setText("Succefully Deleted the record!!!");
-                   //then we also need to delete the data from the global ArrayList
-                   DB.data.remove(data.getIndex());
-                   //then refresh the page as the content of the arrayList has been changed
-                   refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
+                int stats = DB.deleteData(data.getID());
+                if (stats == 0 ) {
+                    text.setText("Succefully Deleted the record!!!");
+                    //if the stats of the operation is 1 that means that the operation is succesfull
+                    confirm.setDisable(true);
+                    //then we also need to delete the data from the global ArrayList
+                    DB.data.remove(data.getIndex());
+                    //then refresh the page as the content of the arrayList has been changed
+                    refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
                }
+            }
+        });
+        
+        confirmation.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent we) {
+                openingDeleteWindow = false;
             }
         });
         childs.getChildren().addAll(text, confirm);
@@ -380,7 +410,7 @@ public class MainController implements Initializable {
         
         layout.setCenter(childs);
         
-        Scene newScene = new Scene(layout, 250, 100);
+        Scene newScene = new Scene(layout, 300, 200);
         
         confirmation.setScene(newScene);
         confirmation.setTitle("Deletion Confirmation");

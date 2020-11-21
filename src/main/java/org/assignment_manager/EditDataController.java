@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -59,6 +60,8 @@ public class EditDataController implements Initializable {
         Stage editPageStage = new Stage();
         String errText = "";
         String newDueDate = "";
+        String warningText = "";
+        
         final String title = editTitle.getText();
         //if the title is empty, need to add error text into errText variable
         if (title.equals("")) {
@@ -71,17 +74,21 @@ public class EditDataController implements Initializable {
             //therefore when user make the date picker field empty a null exception will be triggered when the 
             //the we want to get the value
             newDueDate = editDate.getValue().toString();
+            boolean taskSetToPassedDate = ParsedData.checkIfTaskSetToPassedDate(newDueDate);
+            if (taskSetToPassedDate) {
+                warningText += "\nWarning: You're setting the task to a date that's older than the current Date";
+            } 
         }catch (NullPointerException err) {
             errText += "Error: A Due Date is needed for this assignment!!!\n";
         }
-        boolean taskSetToPassedDate = ParsedData.checkIfTaskSetToPassedDate(newDueDate);
+
+        if (title == currItem.getTitle() && newDueDate == currItem.getDueDate()) {
+            warningText += "The data has not been changed, are you sure to submit the change?";
+        }
         
-        if (taskSetToPassedDate) {
-            errText += "\nWarning: You're changing the task to a date that's older than the current Date";
-        } 
         //if there's no error produced when checking user's provided data continue with adding the data into the database
         //by first asking for permission
-        if(errText.length() < 1) {
+        if(errText.length() == 0) {
             //creating a comfirmation pop-up to see if user really want to edit the data
             //only one confirmation window that could be created at a time
             if (!isManagingRecord) {
@@ -91,19 +98,38 @@ public class EditDataController implements Initializable {
                 BorderPane layout= new BorderPane();
                 VBox childs = new VBox();
 
-                Label text = new Label("Confirm to edit \"" + currItem.getTitle() 
+                Label warningLabel = new Label(""),
+                        errorLabel;
+                
+                String boxPadding = "-fx-padding: 10 20 30 20;";
+                
+                if (warningText.length() > 0) {
+                    warningLabel.setText(warningText);
+                    warningLabel.setStyle("-fx-font:14px Georgia;"
+                    + "-fx-font-weight:800;"
+                    + "-fx-text-fill:red;"
+                    + "-fx-max-witdh: 100;"
+                    + boxPadding);
+                    warningLabel.setTextAlignment(TextAlignment.CENTER);
+                    warningLabel.setWrapText(true);
+                    childs.getChildren().add(warningLabel);
+                }
+                
+                errorLabel = new Label("Confirm to edit \"" + currItem.getTitle() 
                                         + "\",\nDued in " + currItem.getDueDate() + "\n\nInto\n\n"
                                         + title + ",\nDued in " + DUEDATE + "?");
-
+                errorLabel.setStyle("-fx-font:14px Georgia;"
+                                + "-fx-font-weight:800;"
+                                + "-fx-max-witdh: 100;"
+                                + boxPadding);
                 Button confirm = new Button("Confirm");
 
-                childs.getChildren().addAll(text, confirm);
-                text.setPadding(new Insets(10, 10, 20, 20));
+                childs.getChildren().addAll(errorLabel, confirm);
                 childs.setAlignment(Pos.CENTER);
 
                 layout.setCenter(childs);
 
-                Scene newScene = new Scene(layout, 400, 250);
+                Scene newScene = new Scene(layout, 400, 300);
 
                 editPageStage.setScene(newScene);
                 editPageStage.setTitle("Data Edition Confirmation");
@@ -118,17 +144,18 @@ public class EditDataController implements Initializable {
                         //by using the editData method in the DBManagement class, begin to edit the data in the database
                         int stats = DBObj.editData(currItem.getID(), title, DUEDATE);
                         //if the operation returned 1 after the operation, it means that the data has been edited succesfully in the database
-                        //set the confirm button     
+                        //set the confirm button
+                        warningLabel.setText("");
                         confirm.setVisible(false);
                         if (stats == 1 ) {
                             //change the message from the pop up window
-                            text.setText("Succefully Edited the record!!!");
+                            errorLabel.setText("Succefully Edited the record!!!");
                             //replace the data in the global ArrayList that stores all the assignments
                             DBObj.data.set(currItem.getIndex(), newData);
                             //update the index of the object as maybe the edited data changed its due date
                             DBObj.updateDataIndex();
                         }else {
-                            text.setText("Failed to edit the record in Database!!!");
+                            errorLabel.setText("Failed to edit the record in Database!!!");
                         }
                     }
                 });

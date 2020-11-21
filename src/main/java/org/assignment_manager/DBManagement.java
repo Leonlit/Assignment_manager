@@ -66,9 +66,9 @@ public class DBManagement {
     //  @param tableName   - the name of the table to check.
     private void makeSureTableExist (String tableName) throws SQLException {
         String creatTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName +" ("
-                + "ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-                + "TITLE LONG VARCHAR,"
-                + "DUEDATE DATE)";
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "TITLE LONG VARCHAR NOT NULL,"
+                + "DUEDATE DATE NOT NULL)";
         Statement stmt = conn.createStatement();
         stmt.execute(creatTableQuery);
     }
