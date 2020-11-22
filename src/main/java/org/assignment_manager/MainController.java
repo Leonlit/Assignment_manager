@@ -465,7 +465,11 @@ public class MainController implements Initializable {
             color = "red";
             text = "Due Today!!!";
         }else {
-            color = "green";
+            if (data.daysLeft() < 4) {
+                color = "darkorange";
+            }else {
+                color = "green";
+            }
             text = "Due in " + data.daysLeft();
         }
         
