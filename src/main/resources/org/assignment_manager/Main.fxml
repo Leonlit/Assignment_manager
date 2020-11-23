@@ -49,7 +49,7 @@
       </GridPane>
       <Pane fx:id="notisBoard" layoutY="369.0" prefHeight="233.0" prefWidth="455.0" AnchorPane.bottomAnchor="0.0">
          <children>
-            <Label layoutX="49.0" layoutY="23.0" text="Number of Available Assignment : ">
+            <Label layoutX="49.0" layoutY="23.0" text="Available Assignments This Year : ">
                <font>
                   <Font name="Arial Black" size="19.0" />
                </font>

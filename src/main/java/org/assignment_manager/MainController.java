@@ -470,7 +470,7 @@ public class MainController implements Initializable {
             }else {
                 color = "green";
             }
-            text = "Due in " + data.daysLeft();
+            text = "Due in " + data.daysLeft() + "days";
         }
         
         noticeDayLeft.setStyle("-fx-text-fill:" + color);
