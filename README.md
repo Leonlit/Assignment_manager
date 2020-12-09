@@ -19,8 +19,7 @@ This is an assignments manager which are created using Javafx1.8 (But later migr
 
 
 ## Contact
-If you have any question or suggestion regarding the project, feel free to contact me. If you found any bugs in the program, please contact me if you can. Thanks :D 
+If you have any question or suggestion regarding the project, feel free to contact me or open up an issue. If you found any bugs in the program, please contact me if you can. Thanks :D 
 
 ### [leonlit](https://github.com/Leonlit) :
  - [twitter](https://twitter.com/leonlit)
- - [email](leonlit123@gmail.com)
