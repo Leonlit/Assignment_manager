@@ -33,9 +33,13 @@ import javafx.stage.WindowEvent;
 public class MainController implements Initializable {
     
     private int currMonthNumber = 0;
-    private boolean stageOpen = false;      //limiting user so one window only can be opened for creating new assignment
-    private boolean showingAll = false;     //did user choose to see all assignment available?
-    private boolean editOpen = false;       //limiting only one edit assignment window to be created at one time
+    //limiting user so one window only can be opened for creating new assignment
+    private boolean stageOpen = false;
+    //did user choose to see all assignment available
+    private boolean showingAll = false;
+    //limiting only one edit assignment window to be created at one time
+    private boolean editOpen = false;
+    //limiting that the delete window can only open one at a time
     private boolean openingDeleteWindow = false;
     
     public static DBManagement DB;
@@ -52,17 +56,17 @@ public class MainController implements Initializable {
     private ScrollPane itemListPane;
 
 
-    //when the add new assignment button is clicked    
+    //when the add new assignment button is clicked shsow a new small window for users to add new assignment  
     @FXML
     private void addNewAssignment(ActionEvent event) throws IOException  {
         if (!stageOpen) {
             Stage addNew = new Stage();
-            Stage popUpStage = new Stage();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addNew.fxml"));
             Parent root = loader.load();
 
             AddNewController controller = loader.getController();
             //passing dataabse object, the stage object to the cotroller file and the stage for pop up
+            //to let user have a final checks to the data he entered
             controller.setupAddingData(DB, addNew);
             
             Scene addAssignment = new Scene(root);
@@ -73,6 +77,7 @@ public class MainController implements Initializable {
             addNew.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent we) {
+                    //refreshing the tasks bar at the left
                     refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
                     stageOpen = false;
                 }

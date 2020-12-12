@@ -4,7 +4,7 @@
   <groupId>org</groupId>
   <artifactId>Assignment_manager</artifactId>
   <name>Assignment_manager</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <build>
     <plugins>
       <plugin>
