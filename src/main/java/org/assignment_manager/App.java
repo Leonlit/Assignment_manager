@@ -1,5 +1,6 @@
 package org.assignment_manager;
 
+import java.net.URL;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +16,7 @@ public class App extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-        stage.setTitle("Assignment Manager - v1.1.0");
+        stage.setTitle("Assignment Manager - v1.0.1");
     }
     
     public static void main(String[] args) {
