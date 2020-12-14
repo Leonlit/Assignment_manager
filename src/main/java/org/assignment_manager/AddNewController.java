@@ -76,7 +76,7 @@ public class AddNewController implements Initializable {
                 BorderPane layout= new BorderPane();
                 VBox childs = new VBox();
                 Label warningLabel = new Label(""),
-                        errorLabel;
+                    errorLabel;
                 
                 String boxPadding = "-fx-padding: 10 20 10 20;";
                 
@@ -142,8 +142,8 @@ public class AddNewController implements Initializable {
                         if (!confirm.isVisible()) {
                             stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
                             stage.close();
+                            confirmationWindowVisible = false;
                         }
-                        confirmationWindowVisible = false;
                     }
                 });
             }

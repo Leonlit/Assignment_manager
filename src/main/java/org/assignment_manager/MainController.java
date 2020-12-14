@@ -73,6 +73,7 @@ public class MainController implements Initializable {
             addNew.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent we) {
+                    popUpStage.close();
                     refreshMainPage(getTaskForMonth(currMonthNumber), currMonthNumber);
                     stageOpen = false;
                 }
