@@ -23,7 +23,8 @@ public class AddNewController implements Initializable {
 
     private Stage stage;                            //the object that store the methods for handling the window behaviour
     private DBManagement DB;                        //the object that store the methods that are used in DB handling 
-    private boolean managingOneRecord = false;      //we set that only one comfirmation window could be created at one time
+    private boolean confirmationWindowVisible = false;      //we set that only one comfirmation window could be created at one time
+    private Stage confirmationPopUp;
     
     @FXML
     private TextField createNewTitle;
@@ -65,9 +66,8 @@ public class AddNewController implements Initializable {
         
         //if the length of the string is less than 1 means its empty, means that user has provided all the required data correctly
         if (errorText.length() == 0) {
-            if (!managingOneRecord) {
-                managingOneRecord = true;
-                Stage addPageNotice = new Stage();
+            if (!confirmationWindowVisible) {
+                confirmationWindowVisible = true;
                 //since to use a varible value in the event handle need to be in constant
                 final String TITLE = newTitle;
                 final String DUEDATE = newDueDate;
@@ -108,9 +108,9 @@ public class AddNewController implements Initializable {
 
                 Scene newScene = new Scene(layout, 400, 300);
 
-                addPageNotice.setScene(newScene);
-                addPageNotice.setTitle("Create new record Confirmation");
-                addPageNotice.show();
+                this.confirmationPopUp.setScene(newScene);
+                this.confirmationPopUp.setTitle("Create new record Confirmation");
+                this.confirmationPopUp.show();
 
                 //when the confirm button is clicked, begin to add the data into the database
                 confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -134,7 +134,7 @@ public class AddNewController implements Initializable {
                 });
                 
                 //adding a event handler for the confirmation window to detect if the window is being closed by the user
-                addPageNotice.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                this.confirmationPopUp.setOnCloseRequest(new EventHandler<WindowEvent>() {
                     @Override
                     public void handle(WindowEvent we) {
                         //if the confirm button is not visible, it means that the user has either get an error or has successfully added the data
@@ -143,7 +143,7 @@ public class AddNewController implements Initializable {
                             stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
                             stage.close();
                         }
-                        managingOneRecord = false;
+                        confirmationWindowVisible = false;
                     }
                 });
             }
@@ -156,14 +156,12 @@ public class AddNewController implements Initializable {
     //storin the required data
     // @param DB    - the object that contains method for handling database operations
     // @param stage - A Stage class object for managing the window
-    public void setupAddingData (DBManagement DB, Stage stage) {
+    public void setupAddingData (DBManagement DB, Stage stage, Stage confirmationPopUp) {
         this.stage = stage;
         this.DB = DB;
+        this.confirmationPopUp = confirmationPopUp;
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+    public void initialize(URL url, ResourceBundle rb) {}    
 }

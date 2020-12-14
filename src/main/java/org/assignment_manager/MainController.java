@@ -62,8 +62,8 @@ public class MainController implements Initializable {
             Parent root = loader.load();
 
             AddNewController controller = loader.getController();
-            //passing dataabse object, the stage object to the cotroller file and the stage for pop up
-            controller.setupAddingData(DB, addNew);
+            //passing database object, the stage object to the cotroller file and the stage for pop up
+            controller.setupAddingData(DB, addNew, popUpStage);
             
             Scene addAssignment = new Scene(root);
             addNew.setScene(addAssignment);
