@@ -427,6 +427,7 @@ public class MainController implements Initializable {
         if (!editOpen) {
             try {
                 Stage editData = new Stage();
+                Stage popUp = new Stage();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("editData.fxml"));
                 Parent root = loader.load();
 
@@ -434,7 +435,7 @@ public class MainController implements Initializable {
                 //passing neccesarry data to the editData.fxml controller
                 //we pass in the object that has the data that we want to delete, the database object that 
                 //contains method to handle database and lastly the stage object(handling events)
-                controller.setupEditData(data, DB, editData);
+                controller.setupEditData(data, DB, editData, popUp);
 
                 editData.setScene(new Scene(root));
                 editData.setTitle("Edit Assignment Records");

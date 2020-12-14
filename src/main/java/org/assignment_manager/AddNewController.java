@@ -2,28 +2,17 @@ package org.assignment_manager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class AddNewController implements Initializable {
 
     private Stage stage;                            //the object that store the methods for handling the window behaviour
     private DBManagement DB;                        //the object that store the methods that are used in DB handling 
-    private boolean confirmationWindowVisible = false;      //we set that only one comfirmation window could be created at one time
+    public static boolean confirmationWindowVisible = false;      //we set that only one comfirmation window could be created at one time
     private Stage confirmationPopUp;
     
     @FXML
@@ -69,83 +58,8 @@ public class AddNewController implements Initializable {
             if (!confirmationWindowVisible) {
                 confirmationWindowVisible = true;
                 //since to use a varible value in the event handle need to be in constant
-                final String TITLE = newTitle;
-                final String DUEDATE = newDueDate;
-
-                //setting up a confirmation window
-                BorderPane layout= new BorderPane();
-                VBox childs = new VBox();
-                Label warningLabel = new Label(""),
-                    errorLabel;
-                
-                String boxPadding = "-fx-padding: 10 20 10 20;";
-                
-                if (warningText.length() > 0) {
-                    warningLabel.setText(warningText);
-                    warningLabel.setStyle("-fx-font:14px Georgia;"
-                    + "-fx-font-weight:800;"
-                    + "-fx-text-fill:red;"
-                    + "-fx-max-witdh: 100;"
-                    + boxPadding);
-                    warningLabel.setTextAlignment(TextAlignment.CENTER);
-                    warningLabel.setWrapText(true);
-                    childs.getChildren().add(warningLabel);
-                }
-                
-                errorLabel = new Label("Confirm to create " + TITLE + ",\n that's due in " + DUEDATE +"?");
-                errorLabel.setStyle("-fx-font:14px Georgia;"
-                            + "-fx-font-weight:800;"
-                            + "-fx-max-witdh: 100;"
-                            + boxPadding);
-                errorLabel.setTextAlignment(TextAlignment.CENTER);
-                errorLabel.setWrapText(true);
-                Button confirm = new Button("Confirm");
-                
-                childs.getChildren().addAll(errorLabel, confirm); 
-                childs.setAlignment(Pos.CENTER);
-
-                layout.setCenter(childs);
-
-                Scene newScene = new Scene(layout, 400, 300);
-
-                this.confirmationPopUp.setScene(newScene);
-                this.confirmationPopUp.setTitle("Create new record Confirmation");
-                this.confirmationPopUp.show();
-
-                //when the confirm button is clicked, begin to add the data into the database
-                confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        //using the addData method that's in the DBManagement.java to add data into Database
-                        int result = DB.addData(TITLE, DUEDATE);
-                        warningLabel.setText("");
-                        //if the returned value is 1, it means that the operation is succesfull
-                        if (result == 0 ) {
-                            //change the message displayed in the window
-                           errorLabel.setText("Succefully Added the record!!!");
-                       }else {
-                            //if the returned value is not 1, it means that the operation failed
-                            //so we need to change the message to give user a notice on the error
-                            errorLabel.setText("Failed to add the record to Database!!!");
-                        }
-                        //hide the comfirm button so that user cannot re-click the button
-                        confirm.setVisible(false);
-                    }
-                });
-                
-                //adding a event handler for the confirmation window to detect if the window is being closed by the user
-                this.confirmationPopUp.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent we) {
-                        //if the confirm button is not visible, it means that the user has either get an error or has successfully added the data
-                        //into the database. so we can also close the window for creating a new assignment
-                        if (!confirm.isVisible()) {
-                            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-                            stage.close();
-                            confirmationWindowVisible = false;
-                        }
-                    }
-                });
+                ConfirmationWindow test = new ConfirmationWindow(DB, warningText, newTitle,
+                            newDueDate, stage, confirmationPopUp);
             }
         }else {
             //but if the length of the errorText is more than 1, means that there's something wrong with the user input

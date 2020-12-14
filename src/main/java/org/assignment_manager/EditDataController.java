@@ -5,30 +5,19 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-
 
 public class EditDataController implements Initializable {
 
     private DBManagement DBObj;                     //the object that has the method for handling database operation
     private ParsedData currItem;                    //the current item that're to be edited
     private Stage stage;                            //the stage object of the window for editing data
-    private boolean isManagingRecord = false;       //to set that only one confirmation window could be opened
+    private Stage confirmationStage;
+    public static boolean confirmationWindowVisible = false;       //to set that only one confirmation window could be opened
     
     @FXML
     private TextField editTitle;
@@ -40,10 +29,11 @@ public class EditDataController implements Initializable {
     // @param data  - a ParsedData object that are holding the current item to be edited
     // @param DB    - the object that are holding the required methods for handling database operation
     // @param stage - the object of a Stage class which are used to control the behavior of the window
-    public void setupEditData (ParsedData data, DBManagement DB, Stage stage) {
-        DBObj = DB;
+    public void setupEditData (ParsedData data, DBManagement DB, Stage stage, Stage popUpStage) {
+        this.DBObj = DB;
         this.stage = stage;
-        currItem = data;
+        this.currItem = data;
+        this.confirmationStage = popUpStage;
         editTitle.setText(data.getTitle());
         //change the date time stored in the objecet data back to a format that we can display in the date picker 
         //creating a format for the date
@@ -57,7 +47,6 @@ public class EditDataController implements Initializable {
     //triggered when the edit data button is created
     @FXML
     public void editData () {
-        Stage editPageStage = new Stage();
         String errText = "";
         String newDueDate = "";
         String warningText = "";
@@ -91,89 +80,11 @@ public class EditDataController implements Initializable {
         if(errText.length() == 0) {
             //creating a comfirmation pop-up to see if user really want to edit the data
             //only one confirmation window that could be created at a time
-            if (!isManagingRecord) {
-                isManagingRecord = true;
-                final String DUEDATE = newDueDate;
-
-                BorderPane layout= new BorderPane();
-                VBox childs = new VBox();
-
-                Label warningLabel = new Label(""),
-                        errorLabel;
-                
-                String boxPadding = "-fx-padding: 10 20 30 20;";
-                
-                if (warningText.length() > 0) {
-                    warningLabel.setText(warningText);
-                    warningLabel.setStyle("-fx-font:14px Georgia;"
-                    + "-fx-font-weight:800;"
-                    + "-fx-text-fill:red;"
-                    + "-fx-max-witdh: 100;"
-                    + boxPadding);
-                    warningLabel.setTextAlignment(TextAlignment.CENTER);
-                    warningLabel.setWrapText(true);
-                    childs.getChildren().add(warningLabel);
-                }
-                
-                errorLabel = new Label("Confirm to edit \"" + currItem.getTitle() 
-                                        + "\",\nDued in " + currItem.getDueDate() + "\n\nInto\n\n"
-                                        + title + ",\nDued in " + DUEDATE + "?");
-                errorLabel.setStyle("-fx-font:14px Georgia;"
-                                + "-fx-font-weight:800;"
-                                + "-fx-max-witdh: 100;"
-                                + boxPadding);
-                Button confirm = new Button("Confirm");
-
-                childs.getChildren().addAll(errorLabel, confirm);
-                childs.setAlignment(Pos.CENTER);
-
-                layout.setCenter(childs);
-
-                Scene newScene = new Scene(layout, 400, 300);
-
-                editPageStage.setScene(newScene);
-                editPageStage.setTitle("Data Edition Confirmation");
-                editPageStage.show();
-
-                //when the user confirmed that he/she want to edit the data
-                confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        //construct a new ParsedData object so that it could replace the object stored in the global array list
-                        ParsedData newData = new ParsedData(currItem.getID(), currItem.getIndex(), title, DUEDATE);
-                        //by using the editData method in the DBManagement class, begin to edit the data in the database
-                        int stats = DBObj.editData(currItem.getID(), title, DUEDATE);
-                        //if the operation returned 1 after the operation, it means that the data has been edited succesfully in the database
-                        //set the confirm button
-                        warningLabel.setText("");
-                        confirm.setVisible(false);
-                        if (stats == 1 ) {
-                            //change the message from the pop up window
-                            errorLabel.setText("Succefully Edited the record!!!");
-                            //replace the data in the global ArrayList that stores all the assignments
-                            DBObj.data.set(currItem.getIndex(), newData);
-                            //update the index of the object as maybe the edited data changed its due date
-                            DBObj.updateDataIndex();
-                        }else {
-                            errorLabel.setText("Failed to edit the record in Database!!!");
-                        }
-                    }
-                });
-
-                //when the comfirmation window is closed
-                editPageStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent we) {
-                        //if the confirm button is not visible, it means that the operation was successfull
-                        //so we need to also close the window for editing the data.
-                        if (!confirm.isVisible()) {
-                            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-                            stage.close();
-                        }
-                        isManagingRecord = false;
-                    }
-                });
-                
+            if (!confirmationWindowVisible) {
+                confirmationWindowVisible = true;
+                ConfirmationWindow test = new ConfirmationWindow(DBObj, warningText, currItem,
+                                 title, newDueDate, stage, 
+                                 confirmationStage);
             }
         }else {
             //if there's error message in the errText variable, display the error in the confirmation pop-up window
