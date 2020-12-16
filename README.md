@@ -6,16 +6,16 @@ This is an assignments manager which are created using Javafx1.8 (But later migr
 ## Screenshots
 
 ### Start-up
-![start-up of the program](https://github.com/Leonlit/Assignment_manager/blob/master/img/start_up.png?raw=true)
+<img src="https://github.com/Leonlit/Assignment_manager/blob/master/img/start_up.png?raw=true" alt="start-up of the program" height="400px">
 
 ### Example when there's record in the database
-![example view when there's record in database](https://github.com/Leonlit/Assignment_manager/blob/master/img/example_view.png?raw=true)
+<img src="https://github.com/Leonlit/Assignment_manager/blob/master/img/example_view.png?raw=true" alt="example view when there's record in database" height="400px">
 
 ### Adding new Assignment into the database
-![Adding data into the manager](https://github.com/Leonlit/Assignment_manager/blob/master/img/add_new.png?raw=true)
+<img src="https://github.com/Leonlit/Assignment_manager/blob/master/img/add_new.png?raw=true" alt="Adding data into the manager" height="400px">
 
 ### Editing existing Assignment data
-![Editing existing data](https://github.com/Leonlit/Assignment_manager/blob/master/img/edit.png?raw=true)
+<img src="https://github.com/Leonlit/Assignment_manager/blob/master/img/edit.png?raw=true" alt="Editing existing data" height="400px">
 
 
 ## Contact
