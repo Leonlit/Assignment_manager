@@ -82,7 +82,7 @@ public class EditDataController implements Initializable {
             //only one confirmation window that could be created at a time
             if (!confirmationWindowVisible) {
                 confirmationWindowVisible = true;
-                ConfirmationWindow test = new ConfirmationWindow(DBObj, warningText, currItem,
+                DataManipulationConfirmationWindow test = new DataManipulationConfirmationWindow(DBObj, warningText, currItem,
                                  title, newDueDate, stage, 
                                  confirmationStage);
             }
@@ -94,7 +94,6 @@ public class EditDataController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }    
     
 }

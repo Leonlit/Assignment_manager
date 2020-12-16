@@ -12,7 +12,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class ConfirmationWindow {
+public class DataManipulationConfirmationWindow {
     private Label warningLabel = new Label(), 
                 errorLabel = new Label();
     private DBManagement DB;
@@ -20,7 +20,7 @@ public class ConfirmationWindow {
     private ParsedData currItem;
     private Stage confirmationStage, parentStage;
     
-    public ConfirmationWindow(DBManagement DB, String warningText, ParsedData currItem,
+    public DataManipulationConfirmationWindow(DBManagement DB, String warningText, ParsedData currItem,
                                 String newTitle, String newDate, Stage parentStage, 
                                 Stage popUpStage ) {
         this.currItem = currItem;
@@ -33,7 +33,7 @@ public class ConfirmationWindow {
         setupWindow(true);
     }
     
-    public ConfirmationWindow(DBManagement DB, String warningText,String newTitle,
+    public DataManipulationConfirmationWindow(DBManagement DB, String warningText,String newTitle,
                             String newDate, Stage parentStage, Stage popUpStage
                             ) {
         this.warningText = warningText;
@@ -110,7 +110,7 @@ public class ConfirmationWindow {
                     @Override
                     public void handle(WindowEvent we) {
                         //if the confirm button is not visible, it means that the user has either get an error or has successfully added the data
-                        //into the database. so we can also close the window for creating a new assignment
+                        //into the database. so we can also close the window for editing or creating a new assignment
                         if (!confirm.isVisible()) {
                             parentStage.fireEvent(new WindowEvent(parentStage,
                                         WindowEvent.WINDOW_CLOSE_REQUEST));

@@ -251,8 +251,6 @@ public class MainController implements Initializable {
                         showAssignmentOfDay(Integer.parseInt(((Label)e.getSource()).getText()));
                     }
                 });
-                    
-                
             }
             calendar.add(temp, x%7, x/7);
         }
@@ -270,8 +268,6 @@ public class MainController implements Initializable {
     //               since the program has two mode for showing Assignment, current month and all of the assignment.
     private void setupItemList(ArrayList<ParsedData> data) {
         VBox widget = new VBox();
-        String status = "";
-        String extra = "";
         
         //the assignments due date color will also be following the one as the calendar one's
         //where green means the due date is more than 3 days from today
@@ -279,7 +275,6 @@ public class MainController implements Initializable {
         //while lastly red means that the assignment has already due 
         //in here we'll also be changing the status of the first assignment according to it's due date
         for (int x = 0;x<data.size();x++) {
-            extra = "green;";
             final ParsedData currData = data.get(x);
             VBox container = new VBox();
             Label title = new Label (currData.getTitle());
@@ -292,28 +287,13 @@ public class MainController implements Initializable {
             dueDate.setStyle("-fx-font:15px System;"
                             + "-fx-font-weight:900;");
             
-            String textColor[] = {"red;", "darkorange;"};
-            String message = "";
-            int daysLeftMore = currData.daysLeft();
-            
-            if (!currData.taskDued()) {
-                if (daysLeftMore < 4) {
-                   extra = textColor[1];
-                }
-                message = Math.abs(daysLeftMore) + " days left";
-            }else{
-                extra = textColor[0];
-                message = "Due " + Math.abs(daysLeftMore) + " days ago";
-                if (daysLeftMore == 0) {
-                    message = "Due Today";
-                }
-            }
+            String taskData[] = getTaskDueDateText(currData);
             
             //creating a label to change the status of the assignment at the left hand side of the window
-            Label daysLeft = new Label(message);
+            Label daysLeft = new Label(taskData[0]);
             daysLeft.setStyle("-fx-font:15px System;"
                             + "-fx-font-weight:900;"
-                            + "-fx-text-fill:" + extra);
+                            + "-fx-text-fill:" + taskData[1]);
             
             BorderPane subSection = new BorderPane();
             HBox subBtn = new HBox();
@@ -459,24 +439,32 @@ public class MainController implements Initializable {
     private void assignmentAlert (ParsedData data) {
         noticeTitle.setText(data.getTitle());
         noticeDueDate.setText("" + data.getDay() + "/" + data.getMonth() + "/" + data.getYear());
-        String color = "black", text = "";
-        if (data.daysLeft() < 0) {
-            color = "red";
-            text = "Due " + Math.abs(data.daysLeft()) + " days ago";
-        }else if (data.daysLeft() == 0) {
-            color = "red";
-            text = "Due Today!!!";
-        }else {
-            if (data.daysLeft() < 4) {
-                color = "darkorange";
-            }else {
-                color = "green";
-            }
-            text = "Due in " + data.daysLeft() + "days";
-        }
         
-        noticeDayLeft.setStyle("-fx-text-fill:" + color);
-        noticeDayLeft.setText(text);
+        String taskData[] = getTaskDueDateText(data);
+        
+        noticeDayLeft.setStyle("-fx-text-fill:" + taskData[1]);
+        noticeDayLeft.setText(taskData[0]);
+    }
+    
+    private String[] getTaskDueDateText (ParsedData data) {
+        String color = "green";
+        String textColor[] = {"red;", "darkorange;"};
+            String message = "";
+            int daysLeftMore = data.daysLeft(); 
+            
+            if (!data.taskDued()) {
+                if (daysLeftMore < 4) {
+                   color = textColor[1];
+                }
+                message = "Due in " + Math.abs(daysLeftMore) + " days";
+            }else{
+                color = textColor[0];
+                message = "Due " + Math.abs(daysLeftMore) + " days ago";
+                if (daysLeftMore == 0) {
+                    message = "Due Today";
+                }
+            }
+        return new String[]{message, color};
     }
     
     //when there's no assingment, display this message on the page status

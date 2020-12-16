@@ -58,7 +58,7 @@ public class AddNewController implements Initializable {
             if (!confirmationWindowVisible) {
                 confirmationWindowVisible = true;
                 //since to use a varible value in the event handle need to be in constant
-                ConfirmationWindow test = new ConfirmationWindow(DB, warningText, newTitle,
+                DataManipulationConfirmationWindow test = new DataManipulationConfirmationWindow(DB, warningText, newTitle,
                             newDueDate, stage, confirmationPopUp);
             }
         }else {
