@@ -1,5 +1,5 @@
 #!/bin/bash
-# mvn clean compile package 
+mvn clean compile package 
 jarFile=$(basename $(find -type f -name "*.jar"))
 IFS='-'
 read -ra fileNameArr <<< "$jarFile"

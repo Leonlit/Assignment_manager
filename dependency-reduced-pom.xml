@@ -23,6 +23,14 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>com.gluonhq</groupId>
+        <artifactId>client-maven-plugin</artifactId>
+        <version>0.1.35</version>
+        <configuration>
+          <mainClass>org.assignment_manager.FXAppLauncher</mainClass>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.2.0</version>
         <executions>
